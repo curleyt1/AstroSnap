@@ -14,17 +14,25 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfKeyPoint;
+import org.opencv.features2d.FeatureDetector;
+import org.opencv.features2d.Features2d;
+import org.opencv.imgproc.Imgproc;
 
 public class MainActivity extends Activity implements CameraBridgeViewBase.CvCameraViewListener {
 
     private static final String  TAG = "AstroSnap::MainActivity";
-    private CameraBridgeViewBase mOpenCvCameraView;
-    public static final int CAMERA_PERMISSION_REQUEST_CODE = 3;
 
-
+    private Mat mGray;
+    private MatOfKeyPoint matOfKeyPoints;
+    private FeatureDetector blobDetector;
     private int ScreenWidth;
     private int ScreenHeight;
+
+    private CameraBridgeViewBase mOpenCvCameraView;
+    public static final int CAMERA_PERMISSION_REQUEST_CODE = 3;
 
     /**
      * Works with OpenCV Manager in asynchronous fashion.
@@ -67,13 +75,14 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         permitCamera();
-
         Log.d(TAG, "Creating and setting view");
+
+        setContentView(R.layout.activity_main);
+
         mOpenCvCameraView = (CameraBridgeViewBase) new JavaCameraView(this, -1);
         setContentView(mOpenCvCameraView);
         mOpenCvCameraView.setVisibility(CameraBridgeViewBase.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
-        //setContentView(R.layout.activity_main);
     }
 
     /**
@@ -82,23 +91,32 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
      * @param height - the height of the frames that will be delivered
      */
     public void onCameraViewStarted(int width, int height) {
-        ScreenWidth = width;
-        ScreenHeight = height;
+        mGray = new Mat(height, width, CvType.CV_8UC1);
+
+        matOfKeyPoints = new MatOfKeyPoint();
+        blobDetector = FeatureDetector.create(FeatureDetector.SIMPLEBLOB);
     }
 
     /**
-     * Stub required for CameraViewListener
+     * Clean-up
      */
     public void onCameraViewStopped() {
+        mGray.release();
+        matOfKeyPoints.release();
+        blobDetector.empty();
     }
 
     /**
-     * Stub required for CameraViewListener
+     * Function called on every camera frame.
      * @param inputFrame
      * @return
      */
     public Mat onCameraFrame(Mat inputFrame) {
-        return inputFrame;
+        Mat imgWithBlobs = new Mat();
+        Imgproc.cvtColor(inputFrame, mGray, Imgproc.COLOR_BGR2GRAY);
+        blobDetector.detect(mGray, matOfKeyPoints);
+        Features2d.drawKeypoints(mGray, matOfKeyPoints, imgWithBlobs);
+        return imgWithBlobs;
     }
 
     public void permitCamera() {
