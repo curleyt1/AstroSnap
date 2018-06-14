@@ -1,9 +1,13 @@
 package com.witcomp5501.astrosnap;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.WindowManager;
+import android.support.v4.content.ContextCompat;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -16,6 +20,8 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
 
     private static final String  TAG = "AstroSnap::MainActivity";
     private CameraBridgeViewBase mOpenCvCameraView;
+    public static final int CAMERA_PERMISSION_REQUEST_CODE = 3;
+
 
     private int ScreenWidth;
     private int ScreenHeight;
@@ -47,8 +53,7 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
      * Re-load OpenCV when app is resumed
      */
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_6, this, mLoaderCallback);
     }
@@ -61,6 +66,7 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        permitCamera();
 
         Log.d(TAG, "Creating and setting view");
         mOpenCvCameraView = (CameraBridgeViewBase) new JavaCameraView(this, -1);
@@ -93,6 +99,14 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
      */
     public Mat onCameraFrame(Mat inputFrame) {
         return inputFrame;
+    }
+
+    public void permitCamera() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA},CAMERA_PERMISSION_REQUEST_CODE);
+        }
     }
 
 }
