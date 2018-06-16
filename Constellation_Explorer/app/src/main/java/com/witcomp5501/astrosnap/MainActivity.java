@@ -6,8 +6,10 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.support.v4.content.ContextCompat;
+import android.widget.Button;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -77,11 +79,16 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
         permitCamera();
         Log.d(TAG, "Creating and setting view");
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.home_screen);
 
         mOpenCvCameraView = (CameraBridgeViewBase) new JavaCameraView(this, -1);
-        setContentView(mOpenCvCameraView);
-        mOpenCvCameraView.setVisibility(CameraBridgeViewBase.VISIBLE);
+        final Button button = findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                setContentView(mOpenCvCameraView);
+                mOpenCvCameraView.setVisibility(CameraBridgeViewBase.VISIBLE);
+            }
+        });
         mOpenCvCameraView.setCvCameraViewListener(this);
     }
 
