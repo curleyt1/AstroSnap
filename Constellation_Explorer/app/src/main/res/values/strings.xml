@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Astrosnap</string>
+    <string name="app_name">Constellation Explorer</string>
+    <string name="wiki"><a href="http://wikipedia.org">Learn More</a></string>
 </resources>

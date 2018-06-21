@@ -30,7 +30,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@android:color/white"
         android:textIsSelectable="false"
-        android:textSize="30sp"
+        android:textSize="34sp"
         android:visibility="visible" />
 
     <Button

@@ -133,5 +133,4 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA},CAMERA_PERMISSION_REQUEST_CODE);
         }
     }
-
 }

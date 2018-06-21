@@ -22,4 +22,10 @@
         </activity>
     </application>
 
+    <supports-screens android:resizeable="true"
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:anyDensity="true" />
+
 </manifest>
