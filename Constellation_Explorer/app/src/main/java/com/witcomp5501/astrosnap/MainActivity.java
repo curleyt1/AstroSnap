@@ -30,10 +30,9 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
     private static final String  TAG = "AstroSnap::MainActivity";
 
     private Mat mGray;
+    private Mat imgWithBlobs;
     private MatOfKeyPoint matOfKeyPoints;
     private FeatureDetector blobDetector;
-    private int ScreenWidth;
-    private int ScreenHeight;
 
     private CameraBridgeViewBase mOpenCvCameraView;
     public static final int CAMERA_PERMISSION_REQUEST_CODE = 3;
@@ -101,6 +100,7 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
      */
     public void onCameraViewStarted(int width, int height) {
         mGray = new Mat(height, width, CvType.CV_8UC1);
+        imgWithBlobs = new Mat();
 
         matOfKeyPoints = new MatOfKeyPoint();
         blobDetector = FeatureDetector.create(FeatureDetector.SIMPLEBLOB);
@@ -111,6 +111,7 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
      */
     public void onCameraViewStopped() {
         mGray.release();
+        imgWithBlobs.release();
         matOfKeyPoints.release();
         blobDetector.empty();
     }
@@ -121,7 +122,6 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
      * @return
      */
     public Mat onCameraFrame(Mat inputFrame) {
-        Mat imgWithBlobs = new Mat();
         Imgproc.cvtColor(inputFrame, mGray, Imgproc.COLOR_BGR2GRAY);
         blobDetector.detect(mGray, matOfKeyPoints);
         Features2d.drawKeypoints(mGray, matOfKeyPoints, imgWithBlobs);
