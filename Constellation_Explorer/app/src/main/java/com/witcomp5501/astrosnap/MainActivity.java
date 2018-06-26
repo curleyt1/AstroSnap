@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.support.v4.content.ContextCompat;
 import android.widget.Button;
+import java.io.*;
+import java.lang.String;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -132,5 +134,21 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
             // Permission is not granted
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA},CAMERA_PERMISSION_REQUEST_CODE);
         }
+    }
+
+    private String[][][] readTemplateData() {
+        String filename="Constellation_Explorer/constellations_database.csv";
+        InputStream read=new FileInputStream(CheckTest.class.getClassLoader().getResourceAsStream(filename));
+        String[][][] data = new String [5][89][31];
+
+        return data;
+    }
+
+    private String[][] readWikiLinks() {
+        String filename="constellations_wiki_links.csv";
+        InputStream read=new FileInputStream(CheckTest.class.getClassLoader().getResourceAsStream(filename));
+        String[][] data = new String [89][2];
+
+        return data;
     }
 }
