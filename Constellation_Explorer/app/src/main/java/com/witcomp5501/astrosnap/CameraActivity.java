@@ -7,11 +7,11 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.support.v4.content.ContextCompat;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -24,15 +24,13 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfKeyPoint;
 import org.opencv.features2d.FeatureDetector;
-import org.opencv.features2d.Features2d;
-import org.opencv.imgproc.Imgproc;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MainActivity extends Activity implements CameraBridgeViewBase.CvCameraViewListener, View.OnTouchListener {
+public class CameraActivity extends Activity implements CameraBridgeViewBase.CvCameraViewListener2, View.OnTouchListener {
 
-    private static final String  TAG = "AstroSnap::MainActivity";
+    private static final String  TAG = "AstroSnap::Camera";
 
     private Mat mGray;
     private Mat imgWithBlobs;
@@ -55,7 +53,7 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
                 {
                     Log.i(TAG, "OpenCV loaded successfully");
                     mOpenCvCameraView.enableView();
-                    mOpenCvCameraView.setOnTouchListener(MainActivity.this);
+                    mOpenCvCameraView.setOnTouchListener(CameraActivity.this);
                 } break;
                 default:
                 {
@@ -89,13 +87,8 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
         setContentView(R.layout.home_screen);
 
         mOpenCvCameraView = new JavaCameraView(this, -1);
-        final Button button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                setContentView(mOpenCvCameraView);
-                mOpenCvCameraView.setVisibility(CameraBridgeViewBase.VISIBLE);
-            }
-        });
+        setContentView(mOpenCvCameraView);
+        mOpenCvCameraView.setVisibility(CameraBridgeViewBase.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
     }
 
@@ -127,12 +120,12 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
      * @param inputFrame
      * @return
      */
-    public Mat onCameraFrame(Mat inputFrame) {
+    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
 //        Imgproc.cvtColor(inputFrame, mGray, Imgproc.COLOR_BGR2GRAY);
 //        blobDetector.detect(mGray, matOfKeyPoints);
 //        Features2d.drawKeypoints(mGray, matOfKeyPoints, imgWithBlobs);
 //        return imgWithBlobs;
-        return inputFrame;
+        return inputFrame.rgba();
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -147,7 +140,6 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
         Toast.makeText(this, fileName + " saved", Toast.LENGTH_SHORT).show();
         return false;
     }
-
     public void permitCamera() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
                 != PackageManager.PERMISSION_GRANTED) {
