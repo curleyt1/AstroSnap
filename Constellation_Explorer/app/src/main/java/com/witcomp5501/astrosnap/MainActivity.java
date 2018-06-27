@@ -194,7 +194,7 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
             e.printStackTrace();
         }
 
-        return data;
+        return null;
     }
 
     //this function reads into a 2D array the wikipedia links for each of the 88 constellations
