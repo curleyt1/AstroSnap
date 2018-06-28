@@ -1,11 +1,7 @@
 package com.witcomp5501.astrosnap;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,12 +14,13 @@ import org.opencv.android.JavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.CvType;
+import org.opencv.core.KeyPoint;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfKeyPoint;
 import org.opencv.features2d.FeatureDetector;
+import org.opencv.features2d.Features2d;
+import org.opencv.imgproc.Imgproc;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class CameraActivity extends Activity implements CameraBridgeViewBase.CvCameraViewListener2, View.OnTouchListener {
 
@@ -34,6 +31,8 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
     private MatOfKeyPoint matOfKeyPoints;
     private FeatureDetector blobDetector;
     private JavaCameraView mOpenCvCameraView;
+    private boolean processNextFrame = false;
+    private double[][] starArray;
 
     /**
      * Works with OpenCV Manager in asynchronous fashion.
@@ -79,7 +78,6 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
         Log.d(TAG, "Creating and setting view");
 
         setContentView(R.layout.home_screen);
-
         mOpenCvCameraView = new JavaCameraView(this, -1);
         setContentView(mOpenCvCameraView);
         mOpenCvCameraView.setVisibility(CameraBridgeViewBase.VISIBLE);
@@ -115,23 +113,43 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
      * @return
      */
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-//        Imgproc.cvtColor(inputFrame, mGray, Imgproc.COLOR_BGR2GRAY);
-//        blobDetector.detect(mGray, matOfKeyPoints);
-//        Features2d.drawKeypoints(mGray, matOfKeyPoints, imgWithBlobs);
-//        return imgWithBlobs;
+        if (processNextFrame) {
+            Imgproc.cvtColor(inputFrame.rgba(), mGray, Imgproc.COLOR_BGR2GRAY);
+            blobDetector.detect(mGray, matOfKeyPoints);
+            Features2d.drawKeypoints(mGray, matOfKeyPoints, imgWithBlobs);
+            KeyPoint[] keyPoints = matOfKeyPoints.toArray();
+            starArray = new double[keyPoints.length][3];
+            for (int i=0; i < keyPoints.length; i++) {
+                starArray[i][0] = keyPoints[i].pt.x;
+                starArray[i][1] = keyPoints[i].pt.y;
+                starArray[i][2] = keyPoints[i].size;
+            }
+            // Log information on key points.
+            Log.i(TAG, matOfKeyPoints.toString());
+            Log.i(TAG, matOfKeyPoints.dump());
+            for (double[] star : starArray) {
+                Log.i(TAG, star[0] + ", " + star[1] + ", " + star[2]);
+            }
+            processNextFrame = false;
+        }
         return inputFrame.rgba();
     }
 
-    @SuppressLint("SimpleDateFormat")
+    /**
+     * Sets boolean varialbe processNextFrame to True so that image is processed.
+     * @param v
+     * @param event
+     * @return
+     */
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         Log.i(TAG,"onTouch event");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-        String currentDateandTime = sdf.format(new Date());
-        String fileName = Environment.getExternalStorageDirectory().getPath() +
-                "/sample_picture_" + currentDateandTime + ".jpg";
-        //mOpenCvCameraView.takePicture(fileName);
-        Toast.makeText(this, fileName + " saved", Toast.LENGTH_SHORT).show();
-        return false;
+        processNextFrame = true;
+        Toast.makeText(this, "Image Processing", Toast.LENGTH_SHORT).show();
+        return true;
+    }
+
+    public double[][] getStarArray() {
+        return starArray;
     }
 }
