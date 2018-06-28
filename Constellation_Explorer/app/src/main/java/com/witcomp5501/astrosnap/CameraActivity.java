@@ -6,13 +6,10 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.Toast;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -36,9 +33,7 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
     private Mat imgWithBlobs;
     private MatOfKeyPoint matOfKeyPoints;
     private FeatureDetector blobDetector;
-
     private JavaCameraView mOpenCvCameraView;
-    public static final int CAMERA_PERMISSION_REQUEST_CODE = 3;
 
     /**
      * Works with OpenCV Manager in asynchronous fashion.
@@ -81,7 +76,6 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        permitCamera();
         Log.d(TAG, "Creating and setting view");
 
         setContentView(R.layout.home_screen);
@@ -139,12 +133,5 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
         //mOpenCvCameraView.takePicture(fileName);
         Toast.makeText(this, fileName + " saved", Toast.LENGTH_SHORT).show();
         return false;
-    }
-    public void permitCamera() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA},CAMERA_PERMISSION_REQUEST_CODE);
-        }
     }
 }

@@ -3,6 +3,7 @@ package com.witcomp5501.astrosnap;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.os.Bundle;
@@ -34,49 +35,14 @@ import org.opencv.imgproc.Imgproc;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MainActivity extends Activity implements CameraBridgeViewBase.CvCameraViewListener, View.OnTouchListener {
+public class MainActivity extends Activity {
 
     private static final String  TAG = "AstroSnap::MainActivity";
-
-    private Mat mGray;
-    private Mat imgWithBlobs;
-    private MatOfKeyPoint matOfKeyPoints;
-    private FeatureDetector blobDetector;
-
-    private JavaCameraView mOpenCvCameraView;
     public static final int CAMERA_PERMISSION_REQUEST_CODE = 3;
 
-    /**
-     * Works with OpenCV Manager in asynchronous fashion.
-     * OnManagerConnected callback will be called in UI thread, when initialization finishes.
-     * It is not allowed to use OpenCV calls or load dependent libs before invoking this callback.
-     */
-    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
-        @Override
-        public void onManagerConnected(int status) {
-            switch (status) {
-                case LoaderCallbackInterface.SUCCESS:
-                {
-                    Log.i(TAG, "OpenCV loaded successfully");
-                    mOpenCvCameraView.enableView();
-                    mOpenCvCameraView.setOnTouchListener(MainActivity.this);
-                } break;
-                default:
-                {
-                    super.onManagerConnected(status);
-                } break;
-            }
-        }
-    };
-
-
-    /**
-     * Re-load OpenCV when app is resumed
-     */
     @Override
     public void onResume() {
         super.onResume();
-        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_6, this, mLoaderCallback);
     }
 
     /**
@@ -96,72 +62,31 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
 
         setContentView(R.layout.home_screen);
 
-        mOpenCvCameraView = new JavaCameraView(this, -1);
         final Button button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                setContentView(mOpenCvCameraView);
-                mOpenCvCameraView.setVisibility(CameraBridgeViewBase.VISIBLE);
+                startCamera();
             }
         });
-        mOpenCvCameraView.setCvCameraViewListener(this);
     }
 
     /**
-     * Stub required for CameraViewListener
-     * @param width -  the width of the frames that will be delivered
-     * @param height - the height of the frames that will be delivered
+     * This function is called when the application starts to ensure camera permissions are granted.
      */
-    public void onCameraViewStarted(int width, int height) {
-        mGray = new Mat(height, width, CvType.CV_8UC1);
-        imgWithBlobs = new Mat();
-
-        matOfKeyPoints = new MatOfKeyPoint();
-        blobDetector = FeatureDetector.create(FeatureDetector.SIMPLEBLOB);
-    }
-
-    /**
-     * Clean-up resources.
-     */
-    public void onCameraViewStopped() {
-        mGray.release();
-        imgWithBlobs.release();
-        matOfKeyPoints.release();
-        blobDetector.empty();
-    }
-
-    /**
-     * Function called on every camera frame.
-     * @param inputFrame
-     * @return
-     */
-    public Mat onCameraFrame(Mat inputFrame) {
-//        Imgproc.cvtColor(inputFrame, mGray, Imgproc.COLOR_BGR2GRAY);
-//        blobDetector.detect(mGray, matOfKeyPoints);
-//        Features2d.drawKeypoints(mGray, matOfKeyPoints, imgWithBlobs);
-//        return imgWithBlobs;
-        return inputFrame;
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        Log.i(TAG,"onTouch event");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-        String currentDateandTime = sdf.format(new Date());
-        String fileName = Environment.getExternalStorageDirectory().getPath() +
-                "/sample_picture_" + currentDateandTime + ".jpg";
-        //mOpenCvCameraView.takePicture(fileName);
-        Toast.makeText(this, fileName + " saved", Toast.LENGTH_SHORT).show();
-        return false;
-    }
-
-    public void permitCamera() {
+    private void permitCamera() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA},CAMERA_PERMISSION_REQUEST_CODE);
         }
+    }
+
+    /**
+     * This function launches the CameraActivity.java
+     */
+    private void startCamera() {
+        Intent launchCamera = new Intent(this, CameraActivity.class);
+        startActivity(launchCamera);
     }
 
     //this function reads into a 3D array the data from the constellation templates
