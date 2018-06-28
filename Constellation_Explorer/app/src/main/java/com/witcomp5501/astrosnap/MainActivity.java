@@ -102,16 +102,12 @@ public class MainActivity extends Activity {
                 for(int constell=0;constell<89;constell++){
                     data[0][constell][0] = sc.next();
                     numStars = sc.nextInt();
-                    for(int dataCat=0;dataCat<5;dataCat++){
+                    for(int dataCat=1;dataCat<5;dataCat++){
                         for(int star=0;star<numStars;star++){
-
+                            data[dataCat][constell][star] = sc.next();
                         }
                     }
                 }
-                //scanner delimiter use of commas
-                //star will have to be reset after every row
-                //constell should go from 0-88
-                //data cat needs to be reset after each constellation
             }
             sc.close();
             return data;
