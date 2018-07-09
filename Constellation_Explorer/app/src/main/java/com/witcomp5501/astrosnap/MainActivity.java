@@ -40,6 +40,10 @@ public class MainActivity extends Activity {
     private static final String  TAG = "AstroSnap::MainActivity";
     public static final int CAMERA_PERMISSION_REQUEST_CODE = 3;
 
+    private String[][] wiki = new String [89][2]; //wiki[n][0] = constellation_name  wiki[n][1] = wiki_link
+    private String[][][] templateData = new String [5][89][31]; //x values are categories of data on constellation, y values are specific constellation, z values are specific star in constellation
+
+
     @Override
     public void onResume() {
         super.onResume();
@@ -56,9 +60,8 @@ public class MainActivity extends Activity {
         permitCamera();
         Log.d(TAG, "Creating and setting view");
 
-        String[][] wiki = new String [89][2]; //wiki[n][0] = constellation_name  wiki[n][1] = wiki_link
-        String[][][] templateData = new String [5][89][31]; //
-        wiki = readWikiLinks();
+        wiki = readWikiLinks(wiki);
+        templateData = readTemplateData(templateData);
 
         setContentView(R.layout.home_screen);
 
@@ -91,9 +94,8 @@ public class MainActivity extends Activity {
 
     //this function reads into a 3D array the data from the constellation templates
     //this will allow for easy searching through the data when looking for a match
-    private String[][][] readTemplateData() {
+    private String[][][] readTemplateData(String [][][] data) {
         try {
-            String[][][] data = new String [5][89][31];
             int numStars; //maybe use this, would have to insert star counts in csv
             DataInputStream textFileStream = new DataInputStream(getAssets().open(String.format("constellations_database.csv")));
             Scanner sc = new Scanner(textFileStream);
@@ -119,9 +121,8 @@ public class MainActivity extends Activity {
     }
 
     //this function reads into a 2D array the wikipedia links for each of the 88 constellations
-    private String[][] readWikiLinks() {
+    private String[][] readWikiLinks(String [][] data) {
         try {
-            String[][] data = new String [89][2];
             DataInputStream textFileStream = new DataInputStream(getAssets().open(String.format("constellations_wiki_links.txt")));
             Scanner sc = new Scanner(textFileStream);
             for(int x=0;x<89;x++){
@@ -135,4 +136,8 @@ public class MainActivity extends Activity {
         }
         return null;
     }
+
+    public String[][] getWiki(){return wiki;}
+
+    public String[][][] getTemplateData(){return templateData;}
 }
