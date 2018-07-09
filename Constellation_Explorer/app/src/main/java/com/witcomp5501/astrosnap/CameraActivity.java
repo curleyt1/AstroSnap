@@ -32,7 +32,7 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
     private FeatureDetector blobDetector;
     private JavaCameraView mOpenCvCameraView;
     private boolean processNextFrame = false;
-    private double[][] starArray;
+    private static double[][] starArray;
 
     /**
      * Works with OpenCV Manager in asynchronous fashion.
@@ -149,7 +149,7 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
         return true;
     }
 
-    public double[][] getStarArray() {
+    public static double[][] getStarArray() {
         return starArray;
     }
 }

@@ -26,4 +26,11 @@ public class AnalysisActivity extends Activity {
     private double[][] normalize(double[][] starArray, int star1, int star2) {
 
     }
+
+    private String[][] findConstellationMatch(String[][][] templateData) {
+        double[][] userStarData = CameraActivity.getStarArray();
+        String[][] match = new String[3][31];
+
+        return match;
+    }
 }
