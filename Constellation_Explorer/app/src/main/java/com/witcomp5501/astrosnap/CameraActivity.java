@@ -21,6 +21,7 @@ import org.opencv.features2d.FeatureDetector;
 import org.opencv.features2d.Features2d;
 import org.opencv.imgproc.Imgproc;
 
+import java.util.Arrays;
 
 public class CameraActivity extends Activity implements CameraBridgeViewBase.CvCameraViewListener2, View.OnTouchListener {
 
@@ -124,6 +125,11 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
                 starArray[i][1] = keyPoints[i].pt.y;
                 starArray[i][2] = keyPoints[i].size;
             }
+            // Sort starArray by area of each star
+            Arrays.sort(starArray, new java.util.Comparator<double[]>() {
+                public int compare(double[] a, double[] b) { return Double.compare(b[2], a[2]); }
+            });
+
             // Log information on key points.
             Log.i(TAG, matOfKeyPoints.toString());
             Log.i(TAG, matOfKeyPoints.dump());
@@ -149,7 +155,5 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
         return true;
     }
 
-    public static double[][] getStarArray() {
-        return starArray;
-    }
+    public static double[][] getStarArray() { return starArray; }
 }
