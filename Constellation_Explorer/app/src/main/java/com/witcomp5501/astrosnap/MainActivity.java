@@ -41,7 +41,7 @@ public class MainActivity extends Activity {
     public static final int CAMERA_PERMISSION_REQUEST_CODE = 3;
 
     private String[][] wiki = new String [89][2]; //wiki[n][0] = constellation_name  wiki[n][1] = wiki_link
-    private static String[][][] templateData = new String [5][89][31]; //x values are categories of data on constellation, y values are specific constellation, z values are specific star in constellation
+    public String[][][] templateData = new String [5][89][31]; //x values are categories of data on constellation, y values are specific constellation, z values are specific star in constellation
 
 
     @Override
@@ -136,6 +136,4 @@ public class MainActivity extends Activity {
         }
         return null;
     }
-
-    public static String[][][] getTemplateData(){return templateData;}
 }
