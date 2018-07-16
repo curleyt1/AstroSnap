@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.widget.Button;
 import java.io.*;
 import java.lang.String;
+import java.util.Arrays;
 import java.util.Scanner;
 import android.widget.Toast;
 
@@ -40,9 +41,8 @@ public class MainActivity extends Activity {
     private static final String  TAG = "AstroSnap::MainActivity";
     public static final int CAMERA_PERMISSION_REQUEST_CODE = 3;
 
-    private String[][] wiki = new String [89][2]; //wiki[n][0] = constellation_name  wiki[n][1] = wiki_link
     public String[][][] templateData = new String [5][89][31]; //x values are categories of data on constellation, y values are specific constellation, z values are specific star in constellation
-
+    public String[][] wiki = new String [89][2];
 
     @Override
     public void onResume() {
@@ -60,8 +60,8 @@ public class MainActivity extends Activity {
         permitCamera();
         Log.d(TAG, "Creating and setting view");
 
-        wiki = readWikiLinks(wiki);
-        templateData = readTemplateData(templateData);
+        wiki = readWikiLinks();
+        templateData = readTemplateData();
 
         setContentView(R.layout.home_screen);
 
@@ -94,18 +94,20 @@ public class MainActivity extends Activity {
 
     //this function reads into a 3D array the data from the constellation templates
     //this will allow for easy searching through the data when looking for a match
-    private String[][][] readTemplateData(String [][][] data) {
+    private String[][][] readTemplateData() {
         try {
-            int numStars; //maybe use this, would have to insert star counts in csv
+            Log.i(TAG, "Reading Template Data");
+            String[][][] data = new String [5][89][31];
+            String numStars; //maybe use this, would have to insert star counts in csv
             DataInputStream textFileStream = new DataInputStream(getAssets().open(String.format("constellations_database.csv")));
             Scanner sc = new Scanner(textFileStream);
-            sc.useDelimiter(",");
+            sc.useDelimiter(",|\\n");
             while(sc.hasNext()){
                 for(int constell=0;constell<89;constell++){
                     data[0][constell][0] = sc.next();
-                    numStars = sc.nextInt();
+                    numStars = sc.next();
                     for(int dataCat=1;dataCat<5;dataCat++){
-                        for(int star=0;star<numStars;star++){
+                        for(int star=0;star<Integer.parseInt(numStars);star++){
                             data[dataCat][constell][star] = sc.next();
                         }
                     }
@@ -121,8 +123,10 @@ public class MainActivity extends Activity {
     }
 
     //this function reads into a 2D array the wikipedia links for each of the 88 constellations
-    private String[][] readWikiLinks(String [][] data) {
+    private String[][] readWikiLinks() {
         try {
+            Log.i(TAG, "Reading Wiki Links");
+            String[][] data = new String [89][2];
             DataInputStream textFileStream = new DataInputStream(getAssets().open(String.format("constellations_wiki_links.txt")));
             Scanner sc = new Scanner(textFileStream);
             for(int x=0;x<89;x++){
