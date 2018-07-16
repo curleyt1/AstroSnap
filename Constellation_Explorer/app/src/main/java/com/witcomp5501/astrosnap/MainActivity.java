@@ -98,7 +98,7 @@ public class MainActivity extends Activity {
         try {
             Log.i(TAG, "Reading Template Data");
             String[][][] data = new String [5][89][31];
-            String numStars; //maybe use this, would have to insert star counts in csv
+            String numStars;
             DataInputStream textFileStream = new DataInputStream(getAssets().open(String.format("constellations_database.csv")));
             Scanner sc = new Scanner(textFileStream);
             sc.useDelimiter(",|\\n");
@@ -106,6 +106,7 @@ public class MainActivity extends Activity {
                 for(int constell=0;constell<89;constell++){
                     data[0][constell][0] = sc.next();
                     numStars = sc.next();
+                    data[0][constell][1] = numStars;
                     for(int dataCat=1;dataCat<5;dataCat++){
                         for(int star=0;star<Integer.parseInt(numStars);star++){
                             data[dataCat][constell][star] = sc.next();
