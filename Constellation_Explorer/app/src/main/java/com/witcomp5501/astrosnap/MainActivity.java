@@ -96,7 +96,7 @@ public class MainActivity extends Activity {
     //this will allow for easy searching through the data when looking for a match
     private String[][][] readTemplateData(String [][][] data) {
         try {
-            int numStars; //maybe use this, would have to insert star counts in csv
+            int numStars;
             DataInputStream textFileStream = new DataInputStream(getAssets().open(String.format("constellations_database.csv")));
             Scanner sc = new Scanner(textFileStream);
             sc.useDelimiter(",");
@@ -104,6 +104,7 @@ public class MainActivity extends Activity {
                 for(int constell=0;constell<89;constell++){
                     data[0][constell][0] = sc.next();
                     numStars = sc.nextInt();
+                    data[0][constell][1] = Integer.toString(numStars);
                     for(int dataCat=1;dataCat<5;dataCat++){
                         for(int star=0;star<numStars;star++){
                             data[dataCat][constell][star] = sc.next();
