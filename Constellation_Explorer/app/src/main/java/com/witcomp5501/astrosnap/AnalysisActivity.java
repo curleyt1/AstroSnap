@@ -14,42 +14,59 @@ public class AnalysisActivity extends Activity {
         super.onResume();
     }
 
-    /**
-     * Calculate rotation angle based on brightest stars in user image and rotate templates around this.
-     * @param templateData
-     * @return
-     */
-    private double[][][] rotate(String[][][] templateData) {
+//    /**
+//     * Calculate rotation angle based on brightest stars in user image and rotate templates around this.
+//     * @param templateData
+//     * @return
+//     */
+//    private double[][][] rotate(String[][][] templateData) {
+//        double[][] userStarData = CameraActivity.getStarArray();
+//        double[][][] rotatedTemplates = new double[5][89][31];
+//        double x0, y0, x1, y1, dx, dy;
+//        double angle = 0;
+//        int brightest_index, second_brightest;
+//        int numStars = userStarData.length;
+//
+//        if (numStars < 3)
+//            throw new IllegalArgumentException("Analysis Error: Not enough stars detected in user image.");
+//
+//        // Calculates rotation angle to apply to template based on the two brightest stars in user image.
+//        for(brightest_index = 0; brightest_index < numStars; brightest_index++) {
+//            x0 = userStarData[brightest_index][0];
+//            y0 = userStarData[brightest_index][1];
+//            for(second_brightest = 1; second_brightest < numStars; second_brightest++) {
+//                x1 = userStarData[second_brightest][0];
+//                y1 = userStarData[second_brightest][1];
+//                dx = x1 - x0;
+//                dy = y1 - y0;
+//                angle = (180 * (1 - Math.signum(dx)) / 2 + Math.atan(dy / dx) / Math.PI * 180);
+//                Log.i(TAG, "Rotation angle: " + angle);
+//                //TODO: Remove breaks after clarifying flow control, for now test with two brightest
+//                break;
+//            }
+//            break;
+//        }
+//        // Transform template data based on this angle & return
+//        return rotateTemplates(templateData, angle);
+//    }
+
+    private double[][][] rotate(String[][][] templateData, int brightest_index, int second_brightest) {
         double[][] userStarData = CameraActivity.getStarArray();
-        double[][][] rotatedTemplates = new double[5][89][31];
+        String[][][] rotatedTemplates = new String[5][89][31];
         double x0, y0, x1, y1, dx, dy;
         double angle = 0;
-        int brightest_index, second_brightest;
-        int numStars = userStarData.length;
 
-        if (numStars < 3)
-            throw new IllegalArgumentException("Analysis Error: Not enough stars detected in user image.");
+        x0 = userStarData[brightest_index][0];
+        y0 = userStarData[brightest_index][1];
+        x1 = userStarData[second_brightest][0];
+        y1 = userStarData[second_brightest][1];
+        dx = x1 - x0;
+        dy = y1 - y0;
+        angle = (180 * (1 - Math.signum(dx)) / 2 + Math.atan(dy / dx) / Math.PI * 180);
+        Log.i(TAG, "Rotation angle: " + angle);
 
-        // Calculates rotation angle to apply to template based on the two brightest stars in user image.
-        for(brightest_index = 0; brightest_index < numStars; brightest_index++) {
-            x0 = userStarData[brightest_index][0];
-            y0 = userStarData[brightest_index][1];
-            for(second_brightest = 1; second_brightest < numStars; second_brightest++) {
-                x1 = userStarData[second_brightest][0];
-                y1 = userStarData[second_brightest][1];
-                dx = x1 - x0;
-                dy = y1 - y0;
-                angle = (180 * (1 - Math.signum(dx)) / 2 + Math.atan(dy / dx) / Math.PI * 180);
-                Log.i(TAG, "Rotation angle: " + angle);
-                //TODO: Remove breaks after clarifying flow control, for now test with two brightest
-                break;
-            }
-            break;
-        }
-        // Transform template data based on this angle & return
         return rotateTemplates(templateData, angle);
     }
-
     /**
      * This function is called once that rotation angle has been calculated, rotates template data.
      * @param templateData template constellation data
@@ -122,7 +139,6 @@ public class AnalysisActivity extends Activity {
                         {
                             //if match was found, save their coordinates into the match[][] array as well as the name of the identified constellation
                             match[0][0] = templateData[0][i][0];
-                            // TODO: I believe this is using userStarData incorrectly (swap indices?) ask ethan
                             match[1][0] = Double.toString(userStarData[starOne][0]);
                             match[2][0] = Double.toString(userStarData[starOne][1]);
                             match[1][1] = Double.toString(userStarData[starTwo][0]);
