@@ -1,6 +1,7 @@
 package com.witcomp5501.astrosnap;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -33,6 +34,7 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
     private FeatureDetector blobDetector;
     private JavaCameraView mOpenCvCameraView;
     private boolean processNextFrame = false;
+    // first index is star index, second index points to x in [0], y in [1], and area in [2].
     private static double[][] starArray;
 
     /**
@@ -77,7 +79,6 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Log.d(TAG, "Creating and setting view");
-
         setContentView(R.layout.home_screen);
         mOpenCvCameraView = new JavaCameraView(this, -1);
         setContentView(mOpenCvCameraView);
@@ -86,14 +87,13 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
     }
 
     /**
-     * Stub required for CameraViewListener
+     * Stub required for CameraViewListener, initialize image Matrices.
      * @param width -  the width of the frames that will be delivered
      * @param height - the height of the frames that will be delivered
      */
     public void onCameraViewStarted(int width, int height) {
         mGray = new Mat(height, width, CvType.CV_8UC1);
         imgWithBlobs = new Mat();
-
         matOfKeyPoints = new MatOfKeyPoint();
         blobDetector = FeatureDetector.create(FeatureDetector.SIMPLEBLOB);
     }
@@ -109,7 +109,8 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
     }
 
     /**
-     * Function called on every camera frame.
+     * Function called on every camera frame. If the boolean processNextFrame is true,
+     * run blob detection algorithm on the frame and store data in a sorted array.
      * @param inputFrame
      * @return
      */
@@ -137,12 +138,13 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
                 Log.i(TAG, star[0] + ", " + star[1] + ", " + star[2]);
             }
             processNextFrame = false;
+            //startAnalysis();
         }
         return inputFrame.rgba();
     }
 
     /**
-     * Sets boolean varialbe processNextFrame to True so that image is processed.
+     * Sets boolean variable processNextFrame to True so that image is processed.
      * @param v
      * @param event
      * @return
@@ -153,6 +155,14 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
         processNextFrame = true;
         Toast.makeText(this, "Image Processing", Toast.LENGTH_SHORT).show();
         return true;
+    }
+
+    /**
+     * This function launches the Analysis Activity. May be a good idea to call this asynchronously.
+     */
+    private void startAnalysis() {
+        Intent analyze = new Intent(this, AnalysisActivity.class);
+        startActivity(analyze);
     }
 
     public static double[][] getStarArray() { return starArray; }

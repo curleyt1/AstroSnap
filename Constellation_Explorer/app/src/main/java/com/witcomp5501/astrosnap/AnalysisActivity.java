@@ -1,33 +1,81 @@
 package com.witcomp5501.astrosnap;
 
 import android.app.Activity;
+import android.util.Log;
 
 
 public class AnalysisActivity extends Activity {
 
-    private static final String  TAG = "AstroSnap::AnalysisActivity";
-
-    /**
-     *
-     */
-    @Override
-
+    private static final String  TAG = "AstroSnap::Analysis";
     public String[][] match = new String[3][31];
 
+    @Override
     public void onResume() {
         super.onResume();
     }
 
     /**
-     * Process the array to represent locations relative to two particular stars,
-     * Where star 1 will be at origin (0,0) and star 2 will be at point (0,1)
-     * @param starArray
-     * @param star1 int index in star array for first (larger) star
-     * @param star2 int index in star array for second (smaller) star
+     * Calculate rotation angle based on brightest stars in user image and rotate templates around this.
+     * @param templateData
      * @return
      */
-    private double[][] normalize(double[][] starArray, int star1, int star2) {
+    private double[][][] rotate(String[][][] templateData) {
+        double[][] userStarData = CameraActivity.getStarArray();
+        double[][][] rotatedTemplates = new double[5][89][31];
+        double x0, y0, x1, y1, dx, dy;
+        double angle = 0;
+        int brightest_index, second_brightest;
+        int numStars = userStarData.length;
 
+        if (numStars < 3)
+            throw new IllegalArgumentException("Analysis Error: Not enough stars detected in user image.");
+
+        // Calculates rotation angle to apply to template based on the two brightest stars in user image.
+        for(brightest_index = 0; brightest_index < numStars; brightest_index++) {
+            x0 = userStarData[brightest_index][0];
+            y0 = userStarData[brightest_index][1];
+            for(second_brightest = 1; second_brightest < numStars; second_brightest++) {
+                x1 = userStarData[second_brightest][0];
+                y1 = userStarData[second_brightest][1];
+                dx = x1 - x0;
+                dy = y1 - y0;
+                angle = (180 * (1 - Math.signum(dx)) / 2 + Math.atan(dy / dx) / Math.PI * 180);
+                Log.i(TAG, "Rotation angle: " + angle);
+                //TODO: Remove breaks after clarifying flow control, for now test with two brightest
+                break;
+            }
+            break;
+        }
+        // Transform template data based on this angle & return
+        return rotateTemplates(templateData, angle);
+    }
+
+    /**
+     * This function is called once that rotation angle has been calculated, rotates template data.
+     * @param templateData template constellation data
+     * @param angle angle of rotation determined by the rotatefunction
+     * @return
+     */
+    private double[][][] rotateTemplates(String[][][]templateData, double angle) {
+        double[][][] rotatedTemplates = new double[5][89][31];
+        double x, y, xprime, yprime;
+
+        // For each constellation:
+        for (int i = 0; i < 89; i++) {
+            int numStars = Integer.parseInt(templateData[0][i][1]);
+            // For each x and y, parse values, then calculate rotated values. Formulae:
+            // x' = (x * cos(theta)) - (y * sin(theta))
+            // y' = (x * sin(theta)) + (y * cos(theta))
+            for(int j = 0; j < numStars; j++) {
+                x = Double.parseDouble(templateData[1][i][j]);
+                y = Double.parseDouble(templateData[2][i][j]);
+                xprime = (x * Math.cos(angle)) - (y * Math.sin(angle));
+                yprime = (x * Math.sin(angle)) + (y * Math.cos(angle));
+                rotatedTemplates[1][i][j] = xprime;
+                rotatedTemplates[2][i][j] = yprime;
+            }
+        }
+        return rotatedTemplates;
     }
 
     //this function searches through user image and template datasets to find a match between the data
@@ -54,6 +102,8 @@ public class AnalysisActivity extends Activity {
                     double scale =  starTwo_x-starOne_x;
                     //temp array to store scale transformed template data
                     double[][] tempTemplate = new double[2][Integer.parseInt(templateData[0][i][0])];
+
+                    //TODO: make templateData[0][i][1] a variable before starting this loop.
                     //applying the scale transform to the template being looked at
                     for(int j=0;j<Integer.parseInt(templateData[0][i][1]);j++)
                     {
@@ -72,6 +122,7 @@ public class AnalysisActivity extends Activity {
                         {
                             //if match was found, save their coordinates into the match[][] array as well as the name of the identified constellation
                             match[0][0] = templateData[0][i][0];
+                            // TODO: I believe this is using userStarData incorrectly (swap indices?) ask ethan
                             match[1][0] = Double.toString(userStarData[0][starOne]);
                             match[2][0] = Double.toString(userStarData[1][starOne]);
                             match[1][1] = Double.toString(userStarData[0][starTwo]);
@@ -102,6 +153,6 @@ public class AnalysisActivity extends Activity {
                 }
             }
         }
-        return NULL;
+        return null;
     }
 }
