@@ -1,7 +1,10 @@
 package com.witcomp5501.astrosnap;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.util.Log;
+
+import java.util.Arrays;
 
 
 public class AnalysisActivity extends Activity {
@@ -9,47 +12,29 @@ public class AnalysisActivity extends Activity {
     private static final String  TAG = "AstroSnap::Analysis";
     public String[][] match = new String[3][31];
 
+    /**
+     *
+     * @param savedInstanceState
+     */
+    @Override
+    protected void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        match = findConstellationMatch(MainActivity.templateData);
+        Log.i(TAG, Arrays.deepToString(match));
+    }
+
     @Override
     public void onResume() {
         super.onResume();
     }
 
-//    /**
-//     * Calculate rotation angle based on brightest stars in user image and rotate templates around this.
-//     * @param templateData
-//     * @return
-//     */
-//    private double[][][] rotate(String[][][] templateData) {
-//        double[][] userStarData = CameraActivity.getStarArray();
-//        double[][][] rotatedTemplates = new double[5][89][31];
-//        double x0, y0, x1, y1, dx, dy;
-//        double angle = 0;
-//        int brightest_index, second_brightest;
-//        int numStars = userStarData.length;
-//
-//        if (numStars < 3)
-//            throw new IllegalArgumentException("Analysis Error: Not enough stars detected in user image.");
-//
-//        // Calculates rotation angle to apply to template based on the two brightest stars in user image.
-//        for(brightest_index = 0; brightest_index < numStars; brightest_index++) {
-//            x0 = userStarData[brightest_index][0];
-//            y0 = userStarData[brightest_index][1];
-//            for(second_brightest = 1; second_brightest < numStars; second_brightest++) {
-//                x1 = userStarData[second_brightest][0];
-//                y1 = userStarData[second_brightest][1];
-//                dx = x1 - x0;
-//                dy = y1 - y0;
-//                angle = (180 * (1 - Math.signum(dx)) / 2 + Math.atan(dy / dx) / Math.PI * 180);
-//                Log.i(TAG, "Rotation angle: " + angle);
-//                //TODO: Remove breaks after clarifying flow control, for now test with two brightest
-//                break;
-//            }
-//            break;
-//        }
-//        // Transform template data based on this angle & return
-//        return rotateTemplates(templateData, angle);
-//    }
-
+    /**
+     *
+     * @param templateData
+     * @param brightest_index
+     * @param second_brightest
+     * @return
+     */
     private double[][][] rotate(String[][][] templateData, int brightest_index, int second_brightest) {
         double[][] userStarData = CameraActivity.getStarArray();
         String[][][] rotatedTemplates = new String[5][89][31];

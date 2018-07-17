@@ -138,7 +138,7 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
                 Log.i(TAG, star[0] + ", " + star[1] + ", " + star[2]);
             }
             processNextFrame = false;
-            //startAnalysis();
+            startAnalysis();
         }
         return inputFrame.rgba();
     }

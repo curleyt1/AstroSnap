@@ -43,8 +43,8 @@ public class MainActivity extends Activity {
 
     //templateData[][][] will store in memory all the data pulled from the constellation template images
     //x values are categories of data on constellation, y values are specific constellation, z values are specific star in constellation
-    public String[][][] templateData = new String [5][89][31];
-    public String[][] wiki = new String [89][2];
+    public static String[][][] templateData = new String [5][89][31];
+    public static String[][] wiki = new String [89][2];
 
     @Override
     public void onResume() {
