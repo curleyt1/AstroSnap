@@ -1,19 +1,18 @@
 package com.witcomp5501.astrosnap;
 
 import android.app.Activity;
+import android.util.Log;
 
 
 public class AnalysisActivity extends Activity {
 
-    private static final String  TAG = "AstroSnap::AnalysisActivity";
+    private static final String  TAG = "AstroSnap::Analysis";
+    public String[][] match = new String[3][31];
 
     /**
      *
      */
     @Override
-
-    public String[][] match = new String[3][31];
-
     public void onResume() {
         super.onResume();
     }
@@ -21,13 +20,35 @@ public class AnalysisActivity extends Activity {
     /**
      * Process the array to represent locations relative to two particular stars,
      * Where star 1 will be at origin (0,0) and star 2 will be at point (0,1)
-     * @param starArray
-     * @param star1 int index in star array for first (larger) star
-     * @param star2 int index in star array for second (smaller) star
+     * @param templateData
      * @return
      */
-    private double[][] normalize(double[][] starArray, int star1, int star2) {
+    private double[][][] rotate(String[][][] templateData) {
+        double[][] userStarData = CameraActivity.getStarArray();
+        double[][][] rotatedTemplates = new double[5][89][31];
+        double x0, y0, x1, y1, dx, dy, rotation;
+        int brightest_index, second_brightest;
+        int numStars = userStarData.length;
 
+        if (numStars < 3)
+            throw new IllegalArgumentException("Analysis Error: Not enough stars detected in user image.");
+
+        // Calculates rotation angle to apply to template based on the two brightest stars in user image.
+        for(brightest_index = 0; brightest_index < numStars; brightest_index++) {
+            x0 = userStarData[brightest_index][0];
+            y0 = userStarData[brightest_index][1];
+            for(second_brightest = 1; second_brightest < numStars; second_brightest++) {
+                x1 = userStarData[second_brightest][0];
+                y1 = userStarData[second_brightest][1];
+                dx = x1 - x0;
+                dy = y1 - y0;
+                rotation = (180 * (1 - Math.signum(dx)) / 2 + Math. atan(dy / dx) / Math.PI * 180);
+                Log.i(TAG, "Rotation angle: " + rotation);
+            }
+        }
+
+
+        return rotatedTemplates;
     }
 
     private String[][] findConstellationMatch(String[][][] templateData) {
@@ -91,6 +112,6 @@ public class AnalysisActivity extends Activity {
                 }
             }
         }
-        return NULL;
+        return null;
     }
 }
