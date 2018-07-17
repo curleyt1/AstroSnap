@@ -18,15 +18,15 @@ public class AnalysisActivity extends Activity {
     }
 
     /**
-     * Process the array to represent locations relative to two particular stars,
-     * Where star 1 will be at origin (0,0) and star 2 will be at point (0,1)
+     * Calculate rotation angle based on brightest stars in user image and rotate templates around this.
      * @param templateData
      * @return
      */
     private double[][][] rotate(String[][][] templateData) {
         double[][] userStarData = CameraActivity.getStarArray();
         double[][][] rotatedTemplates = new double[5][89][31];
-        double x0, y0, x1, y1, dx, dy, rotation;
+        double x0, y0, x1, y1, dx, dy;
+        double angle = 0;
         int brightest_index, second_brightest;
         int numStars = userStarData.length;
 
@@ -42,12 +42,37 @@ public class AnalysisActivity extends Activity {
                 y1 = userStarData[second_brightest][1];
                 dx = x1 - x0;
                 dy = y1 - y0;
-                rotation = (180 * (1 - Math.signum(dx)) / 2 + Math. atan(dy / dx) / Math.PI * 180);
-                Log.i(TAG, "Rotation angle: " + rotation);
+                angle = (180 * (1 - Math.signum(dx)) / 2 + Math. atan(dy / dx) / Math.PI * 180);
+                Log.i(TAG, "Rotation angle: " + angle);
+                //TODO: Remove breaks after clarifying flow control, for now test with two brightest
+                break;
+            }
+            break;
+        }
+        // Transform template data based on this angle & return
+        return rotateTemplates(templateData, angle);
+    }
+
+    /**
+     * This function is called once that rotation angle has been calculated, rotates template data.
+     * @param templateData template constellation data
+     * @param angle angle of rotation determined by the rotatefunction
+     * @return
+     */
+    private double[][][] rotateTemplates(String[][][]templateData, double angle) {
+        double[][][] rotatedTemplates = new double[5][89][31];
+        double xprime, yprime;
+        // For each constellation
+        for (int i = 0; i < 89; i++) {
+            double[][] tempTemplate = new double[2][Integer.parseInt(templateData[0][i][0])];
+            int numStars = Integer.parseInt(templateData[0][i][1]);
+            //For each x and y:
+            //x' = (x * cos(theta)) - (y * sin(theta))
+            //y' = (x * sin(theta)) + (y * cos(theta))
+            for(int j = 0; j < numStars; j++) {
+
             }
         }
-
-
         return rotatedTemplates;
     }
 
@@ -69,6 +94,8 @@ public class AnalysisActivity extends Activity {
                     double scale =  starTwo_x-starOne_x;
                     //calculate percentage
                     double[][] tempTemplate = new double[2][Integer.parseInt(templateData[0][i][0])];
+
+                    //TODO: make templateData[0][i][1] a variable before starting this loop.
                     for(int j=0;j<Integer.parseInt(templateData[0][i][1]);j++)
                     {
                         tempTemplate[0][j] = Double.parseDouble(templateData[1][i][j])*scale;
@@ -83,6 +110,7 @@ public class AnalysisActivity extends Activity {
                         if(xDelta>(templateXDelta*0.9) && xDelta<(templateXDelta*1.1) && yDelta>(templateYDelta*0.9) && yDelta<(templateYDelta*1.1))
                         {
                             match[0][0] = templateData[0][i][0];
+                            // TODO: I believe this is using userStarData incorrectly (swap indices?) ask ethan
                             match[1][0] = Double.toString(userStarData[0][starOne]);
                             match[2][0] = Double.toString(userStarData[1][starOne]);
                             match[1][1] = Double.toString(userStarData[0][starTwo]);

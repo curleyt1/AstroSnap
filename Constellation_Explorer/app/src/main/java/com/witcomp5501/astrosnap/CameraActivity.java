@@ -34,6 +34,7 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
     private FeatureDetector blobDetector;
     private JavaCameraView mOpenCvCameraView;
     private boolean processNextFrame = false;
+    // first index is star index, second index points to x in [0], y in [1], and area in [2].
     private static double[][] starArray;
 
     /**
