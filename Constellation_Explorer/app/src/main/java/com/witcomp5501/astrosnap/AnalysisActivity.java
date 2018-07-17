@@ -93,17 +93,16 @@ public class AnalysisActivity extends Activity {
             //iterate over the user image dataset for the index of the first star in the triplet
             for(int starOne=0;starOne<userStarData.length-2;starOne++)
             {
-                double starOne_x = userStarData[0][starOne];
+                double starOne_x = userStarData[starOne][0];
                 //iterate over the user image dataset for the index of the second star in the triplet
                 for(int starTwo=starOne+1;starTwo<userStarData.length-1;starTwo++)
                 {
-                    double starTwo_x = userStarData[0][starTwo];
+                    double starTwo_x = userStarData[starTwo][0];
                     //determine scale of the star pair from user image to be applied to templates
                     double scale =  starTwo_x-starOne_x;
                     //temp array to store scale transformed template data
                     double[][] tempTemplate = new double[2][Integer.parseInt(templateData[0][i][0])];
 
-                    //TODO: make templateData[0][i][1] a variable before starting this loop.
                     //applying the scale transform to the template being looked at
                     for(int j=0;j<Integer.parseInt(templateData[0][i][1]);j++)
                     {
@@ -115,20 +114,20 @@ public class AnalysisActivity extends Activity {
                     {
                         double templateXDelta = tempTemplate[1][2] - tempTemplate[1][1];
                         double templateYDelta = tempTemplate[2][2] - tempTemplate[2][1];
-                        double xDelta = userStarData[0][starThree] - userStarData[0][starTwo];
-                        double yDelta = userStarData[1][starThree] - userStarData[1][starTwo];
+                        double xDelta = userStarData[starThree][0] - userStarData[starTwo][0];
+                        double yDelta = userStarData[starThree][1] - userStarData[starTwo][1];
                         //check to see if a match was found with the triplet set
                         if(xDelta>(templateXDelta*0.9) && xDelta<(templateXDelta*1.1) && yDelta>(templateYDelta*0.9) && yDelta<(templateYDelta*1.1))
                         {
                             //if match was found, save their coordinates into the match[][] array as well as the name of the identified constellation
                             match[0][0] = templateData[0][i][0];
                             // TODO: I believe this is using userStarData incorrectly (swap indices?) ask ethan
-                            match[1][0] = Double.toString(userStarData[0][starOne]);
-                            match[2][0] = Double.toString(userStarData[1][starOne]);
-                            match[1][1] = Double.toString(userStarData[0][starTwo]);
-                            match[2][1] = Double.toString(userStarData[1][starTwo]);
-                            match[1][2] = Double.toString(userStarData[0][starThree]);
-                            match[2][2] = Double.toString(userStarData[1][starThree]);
+                            match[1][0] = Double.toString(userStarData[starOne][0]);
+                            match[2][0] = Double.toString(userStarData[starOne][1]);
+                            match[1][1] = Double.toString(userStarData[starTwo][0]);
+                            match[2][1] = Double.toString(userStarData[starTwo][1]);
+                            match[1][2] = Double.toString(userStarData[starThree][0]);
+                            match[2][2] = Double.toString(userStarData[starThree][1]);
                             //iterate over the rest of the user image dataset to find rest of the stars in the matching constellation
                             for(int k=starThree;k<userStarData.length-1;k++)
                             {
@@ -136,13 +135,13 @@ public class AnalysisActivity extends Activity {
                                 {
                                     templateXDelta = tempTemplate[1][m] - tempTemplate[1][k];
                                     templateYDelta = tempTemplate[2][m] - tempTemplate[2][k];
-                                    xDelta = userStarData[0][m] - userStarData[0][k];
-                                    yDelta = userStarData[1][m] - userStarData[1][k];
+                                    xDelta = userStarData[m][0] - userStarData[k][0];
+                                    yDelta = userStarData[m][1] - userStarData[k][1];
                                     //check to see if the specific star is the next star in the constellation
                                     if(xDelta>(templateXDelta*0.9) && xDelta<(templateXDelta*1.1) && yDelta>(templateYDelta*0.9) && yDelta<(templateYDelta*1.1))
                                     {
-                                        match[1][k+1] = Double.toString(userStarData[0][m]);
-                                        match[2][k+1] = Double.toString(userStarData[1][m]);
+                                        match[1][k+1] = Double.toString(userStarData[m][0]);
+                                        match[2][k+1] = Double.toString(userStarData[m][1]);
                                     }
                                 }
                             }
