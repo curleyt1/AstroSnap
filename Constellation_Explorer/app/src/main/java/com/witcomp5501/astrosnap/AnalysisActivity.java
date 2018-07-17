@@ -97,17 +97,18 @@ public class AnalysisActivity extends Activity {
                 //iterate over the user image dataset for the index of the second star in the triplet
                 for(int starTwo=starOne+1;starTwo<userStarData.length-1;starTwo++)
                 {
+                    double[][][] rotatedTemplates = rotate(templateData, starOne, starTwo);
                     double starTwo_x = userStarData[starTwo][0];
                     //determine scale of the star pair from user image to be applied to templates
                     double scale =  starTwo_x-starOne_x;
                     //temp array to store scale transformed template data
-                    double[][] tempTemplate = new double[2][Integer.parseInt(templateData[0][i][0])];
+                    double[][] tempTemplate = new double[2][Integer.parseInt(templateData[0][i][1])];
 
                     //applying the scale transform to the template being looked at
                     for(int j=0;j<Integer.parseInt(templateData[0][i][1]);j++)
                     {
-                        tempTemplate[0][j] = Double.parseDouble(templateData[1][i][j])*scale;
-                        tempTemplate[1][j] = Double.parseDouble(templateData[2][i][j]);
+                        tempTemplate[0][j] = rotatedTemplates[1][i][j]*scale;
+                        tempTemplate[1][j] = rotatedTemplates[2][i][j];
                     }
                     //iterate over the user image dataset for the index of the third star in the user image
                     for(int starThree=starTwo+1;starThree<userStarData.length;starThree++)
