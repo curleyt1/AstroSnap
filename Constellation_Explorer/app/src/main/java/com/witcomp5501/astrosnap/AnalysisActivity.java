@@ -13,7 +13,7 @@ public class AnalysisActivity extends Activity {
     public String[][] match = new String[3][31];
 
     /**
-     *
+     * On create, call findConstellationMatch and log the match.
      * @param savedInstanceState
      */
     @Override
@@ -29,10 +29,11 @@ public class AnalysisActivity extends Activity {
     }
 
     /**
-     *
-     * @param templateData
-     * @param brightest_index
-     * @param second_brightest
+     * Return templates rotated based on two stars. First calculates angle of rotation
+     * Then calls rotateTemplates to transform the data.
+     * @param templateData template constellation data.
+     * @param brightest_index the brighter of the two stars.
+     * @param second_brightest other star used for rotation.
      * @return
      */
     private double[][][] rotate(String[][][] templateData, int brightest_index, int second_brightest) {
@@ -65,6 +66,7 @@ public class AnalysisActivity extends Activity {
         // For each constellation:
         for (int i = 0; i < 89; i++) {
             int numStars = Integer.parseInt(templateData[0][i][1]);
+            Log.i(TAG, "Number of Stars: " + numStars);
             // For each x and y, parse values, then calculate rotated values. Formulae:
             // x' = (x * cos(theta)) - (y * sin(theta))
             // y' = (x * sin(theta)) + (y * cos(theta))
@@ -73,10 +75,16 @@ public class AnalysisActivity extends Activity {
                 y = Double.parseDouble(templateData[2][i][j]);
                 xprime = (x * Math.cos(angle)) - (y * Math.sin(angle));
                 yprime = (x * Math.sin(angle)) + (y * Math.cos(angle));
+                Log.i(TAG, "x: " + x);
+                Log.i(TAG, "y: " + y);
+                Log.i(TAG, "xprime: " + xprime);
+                Log.i(TAG, "yprime: " + yprime);
                 rotatedTemplates[1][i][j] = xprime;
                 rotatedTemplates[2][i][j] = yprime;
             }
         }
+        Log.i(TAG, "Rotated X values: " + Arrays.deepToString(rotatedTemplates[1]));
+        Log.i(TAG, "Rotated Y values: " + Arrays.deepToString(rotatedTemplates[2]));
         return rotatedTemplates;
     }
 
