@@ -9,9 +9,6 @@ public class AnalysisActivity extends Activity {
     private static final String  TAG = "AstroSnap::Analysis";
     public String[][] match = new String[3][31];
 
-    /**
-     *
-     */
     @Override
     public void onResume() {
         super.onResume();
@@ -42,7 +39,7 @@ public class AnalysisActivity extends Activity {
                 y1 = userStarData[second_brightest][1];
                 dx = x1 - x0;
                 dy = y1 - y0;
-                angle = (180 * (1 - Math.signum(dx)) / 2 + Math. atan(dy / dx) / Math.PI * 180);
+                angle = (180 * (1 - Math.signum(dx)) / 2 + Math.atan(dy / dx) / Math.PI * 180);
                 Log.i(TAG, "Rotation angle: " + angle);
                 //TODO: Remove breaks after clarifying flow control, for now test with two brightest
                 break;
@@ -61,16 +58,21 @@ public class AnalysisActivity extends Activity {
      */
     private double[][][] rotateTemplates(String[][][]templateData, double angle) {
         double[][][] rotatedTemplates = new double[5][89][31];
-        double xprime, yprime;
-        // For each constellation
-        for (int i = 0; i < 89; i++) {
-            double[][] tempTemplate = new double[2][Integer.parseInt(templateData[0][i][0])];
-            int numStars = Integer.parseInt(templateData[0][i][1]);
-            //For each x and y:
-            //x' = (x * cos(theta)) - (y * sin(theta))
-            //y' = (x * sin(theta)) + (y * cos(theta))
-            for(int j = 0; j < numStars; j++) {
+        double x, y, xprime, yprime;
 
+        // For each constellation:
+        for (int i = 0; i < 89; i++) {
+            int numStars = Integer.parseInt(templateData[0][i][1]);
+            // For each x and y, parse values, then calculate rotated values. Formulae:
+            // x' = (x * cos(theta)) - (y * sin(theta))
+            // y' = (x * sin(theta)) + (y * cos(theta))
+            for(int j = 0; j < numStars; j++) {
+                x = Double.parseDouble(templateData[1][i][j]);
+                y = Double.parseDouble(templateData[2][i][j]);
+                xprime = (x * Math.cos(angle)) - (y * Math.sin(angle));
+                yprime = (x * Math.sin(angle)) + (y * Math.cos(angle));
+                rotatedTemplates[1][i][j] = xprime;
+                rotatedTemplates[2][i][j] = yprime;
             }
         }
         return rotatedTemplates;
