@@ -41,7 +41,9 @@ public class MainActivity extends Activity {
     private static final String  TAG = "AstroSnap::MainActivity";
     public static final int CAMERA_PERMISSION_REQUEST_CODE = 3;
 
-    public String[][][] templateData = new String [5][89][31]; //x values are categories of data on constellation, y values are specific constellation, z values are specific star in constellation
+    //templateData[][][] will store in memory all the data pulled from the constellation template images
+    //x values are categories of data on constellation, y values are specific constellation, z values are specific star in constellation
+    public String[][][] templateData = new String [5][89][31];
     public String[][] wiki = new String [89][2];
 
     @Override
@@ -60,11 +62,14 @@ public class MainActivity extends Activity {
         permitCamera();
         Log.d(TAG, "Creating and setting view");
 
+        //loading into memory the file data
         wiki = readWikiLinks();
         templateData = readTemplateData();
 
+        //start the user at the home screen
         setContentView(R.layout.home_screen);
 
+        //waiting for user to click the "find constellation" button to open the camera, then switch to camera activity
         final Button button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
