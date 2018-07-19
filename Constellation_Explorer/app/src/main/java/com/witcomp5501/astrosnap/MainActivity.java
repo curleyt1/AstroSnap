@@ -1,40 +1,19 @@
 package com.witcomp5501.astrosnap;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.support.v4.content.ContextCompat;
 import android.widget.Button;
 import java.io.*;
 import java.lang.String;
-import java.util.Arrays;
 import java.util.Scanner;
-import android.widget.Toast;
-
-import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.CameraBridgeViewBase;
-import org.opencv.android.JavaCameraView;
-import org.opencv.android.LoaderCallbackInterface;
-import org.opencv.android.OpenCVLoader;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfKeyPoint;
-import org.opencv.features2d.FeatureDetector;
-import org.opencv.features2d.Features2d;
-import org.opencv.imgproc.Imgproc;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class MainActivity extends Activity {
 

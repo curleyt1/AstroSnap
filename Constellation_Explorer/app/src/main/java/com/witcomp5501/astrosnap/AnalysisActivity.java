@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.util.Arrays;
-
-
 public class AnalysisActivity extends Activity {
 
     private static final String  TAG = "AstroSnap::Analysis";
@@ -117,7 +114,7 @@ public class AnalysisActivity extends Activity {
                     double[][] tempTemplate = new double[2][Integer.parseInt(templateData[0][i][1])];
 
                     //applying the scale transform to the template being looked at
-                    for(int j=0;j<Integer.parseInt(templateData[0][i][1]);j++)
+                    for(int j=1;j<Integer.parseInt(templateData[0][i][1]);j++)
                     {
                         tempTemplate[0][j] = rotatedTemplates[1][i][j]*scale;
                         tempTemplate[1][j] = rotatedTemplates[2][i][j];
