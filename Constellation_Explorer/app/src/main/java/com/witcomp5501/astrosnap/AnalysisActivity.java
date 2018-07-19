@@ -154,7 +154,7 @@ public class AnalysisActivity extends Activity {
                             while(starCount!=Integer.parseInt(templateData[0][i][1])) {
                                 for(nextStar = lastStar+1; nextStar<userStarData.length;nextStar++)
                                 {
-<<<<<<< Updated upstream
+
                                     templateXDelta = tempTemplate[0][starCount+1] - tempTemplate[0][starCount];
                                     templateYDelta = tempTemplate[1][starCount+1] - tempTemplate[1][starCount];
                                     xDelta = userStarData[nextStar][0] - userStarData[lastStar][0];
@@ -164,24 +164,25 @@ public class AnalysisActivity extends Activity {
                                         match[2][starCount + 1] = Double.toString(userStarData[nextStar][1]);
                                         starCount++;
                                         break;
-=======
-                                    templateXDelta = tempTemplate[0][m] - tempTemplate[0][k];
-                                    templateYDelta = tempTemplate[1][m] - tempTemplate[1][k];
-                                    xDelta = userStarData[m][0] - userStarData[k][0];
-                                    yDelta = userStarData[m][1] - userStarData[k][1];
-                                    if (i == 9) {
-                                        Log.i(TAG, "Inner Comparisons:");
-                                        Log.i(TAG, "rotated template first star: " + tempTemplate[0][m] + ", " + tempTemplate[1][m]);
-                                        Log.i(TAG, "rotated template second star: " + tempTemplate[0][k] + ", " + tempTemplate[1][k]);
-                                        Log.i(TAG, "tempXDelta: " + templateXDelta + ". TempYDelta: " + templateYDelta);
-                                        Log.i(TAG, "userXDelta: " + xDelta + ". userYDelta" + yDelta);
-                                    }
-                                    //check to see if the specific star is the next star in the constellation
-                                    if(xDelta>(templateXDelta*0.9) && xDelta<(templateXDelta*1.1) && yDelta>(templateYDelta*0.9) && yDelta<(templateYDelta*1.1))
-                                    {
-                                        match[1][k+1] = Double.toString(userStarData[m][0]);
-                                        match[2][k+1] = Double.toString(userStarData[m][1]);
->>>>>>> Stashed changes
+
+//                                    templateXDelta = tempTemplate[0][m] - tempTemplate[0][k];
+//                                    templateYDelta = tempTemplate[1][m] - tempTemplate[1][k];
+//                                    xDelta = userStarData[m][0] - userStarData[k][0];
+//                                    yDelta = userStarData[m][1] - userStarData[k][1];
+//                                    if (i == 9) {
+//                                        Log.i(TAG, "Inner Comparisons:");
+//                                        Log.i(TAG, "rotated template first star: " + tempTemplate[0][m] + ", " + tempTemplate[1][m]);
+//                                        Log.i(TAG, "rotated template second star: " + tempTemplate[0][k] + ", " + tempTemplate[1][k]);
+//                                        Log.i(TAG, "tempXDelta: " + templateXDelta + ". TempYDelta: " + templateYDelta);
+//                                        Log.i(TAG, "userXDelta: " + xDelta + ". userYDelta" + yDelta);
+//                                    }
+//                                    //check to see if the specific star is the next star in the constellation
+//                                    if(xDelta>(templateXDelta*0.9) && xDelta<(templateXDelta*1.1) && yDelta>(templateYDelta*0.9) && yDelta<(templateYDelta*1.1))
+//                                    {
+//                                        match[1][k+1] = Double.toString(userStarData[m][0]);
+//                                        match[2][k+1] = Double.toString(userStarData[m][1]);
+//
+//                                    }
                                     }
                                 }
                                 lastStar = nextStar;
@@ -209,6 +210,6 @@ public class AnalysisActivity extends Activity {
                 }
             }
         }
-        return null;
+        return new String[3][31];
     }
 }
