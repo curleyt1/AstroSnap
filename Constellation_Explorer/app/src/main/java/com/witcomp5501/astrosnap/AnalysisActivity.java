@@ -140,31 +140,49 @@ public class AnalysisActivity extends Activity {
                             match[2][1] = Double.toString(userStarData[starTwo][1]);
                             match[1][2] = Double.toString(userStarData[starThree][0]);
                             match[2][2] = Double.toString(userStarData[starThree][1]);
-                            //iterate over the rest of the user image dataset to find rest of the stars in the matching constellation
-                            for(int k=starThree;k<userStarData.length-1;k++)
-                            {
-                                for(int m=starThree+1;m<userStarData.length;m++)
+                            int starCount = 3;
+                            int lastStar=starThree;
+                            int nextStar;
+
+                            while(starCount!=Integer.parseInt(templateData[0][i][1])) {
+                                for(nextStar = lastStar+1; nextStar<userStarData.length;nextStar++)
                                 {
-                                    templateXDelta = tempTemplate[0][m] - tempTemplate[0][k];
-                                    templateYDelta = tempTemplate[1][m] - tempTemplate[1][k];
-                                    xDelta = userStarData[m][0] - userStarData[k][0];
-                                    yDelta = userStarData[m][1] - userStarData[k][1];
-                                    //check to see if the specific star is the next star in the constellation
-                                    if(xDelta>(templateXDelta*0.9) && xDelta<(templateXDelta*1.1) && yDelta>(templateYDelta*0.9) && yDelta<(templateYDelta*1.1))
-                                    {
-                                        match[1][k+1] = Double.toString(userStarData[m][0]);
-                                        match[2][k+1] = Double.toString(userStarData[m][1]);
+                                    templateXDelta = tempTemplate[0][starCount+1] - tempTemplate[0][starCount];
+                                    templateYDelta = tempTemplate[1][starCount+1] - tempTemplate[1][starCount];
+                                    xDelta = userStarData[nextStar][0] - userStarData[lastStar][0];
+                                    yDelta = userStarData[nextStar][1] - userStarData[lastStar][1];
+                                    if (xDelta > (templateXDelta * 0.9) && xDelta < (templateXDelta * 1.1) && yDelta > (templateYDelta * 0.9) && yDelta < (templateYDelta * 1.1)) {
+                                        match[1][starCount + 1] = Double.toString(userStarData[nextStar][0]);
+                                        match[2][starCount + 1] = Double.toString(userStarData[nextStar][1]);
+                                        starCount++;
+                                        break;
                                     }
                                 }
+                                lastStar = nextStar;
+                                //iterate over the rest of the user image dataset to find rest of the stars in the matching constellation
+                                //for (int k = starThree; k < userStarData.length - 1; k++) {
+//                                    for (int m = starThree + 1; m < userStarData.length; m++) {
+//                                        templateXDelta = tempTemplate[0][m] - tempTemplate[0][k];
+//                                        templateYDelta = tempTemplate[1][m] - tempTemplate[1][k];
+//                                        xDelta = userStarData[m][0] - userStarData[k][0];
+//                                        yDelta = userStarData[m][1] - userStarData[k][1];
+//                                        //check to see if the specific star is the next star in the constellation
+//                                        if (xDelta > (templateXDelta * 0.9) && xDelta < (templateXDelta * 1.1) && yDelta > (templateYDelta * 0.9) && yDelta < (templateYDelta * 1.1)) {
+//                                            match[1][k + 1] = Double.toString(userStarData[m][0]);
+//                                            match[2][k + 1] = Double.toString(userStarData[m][1]);
+//                                            oldCount = starCount;
+//                                            starCount++;
+//                                            break;
+//                                        }
+//                                    }
+                                //}
                             }
-
                             return match;
                         }
                     }
                 }
             }
         }
-        //return null;
-        return new String[3][31];
+        return null;
     }
 }
