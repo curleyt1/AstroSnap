@@ -66,20 +66,25 @@ public class AnalysisActivity extends Activity {
         // For each constellation:
         for (int i = 0; i < 86; i++) {
             int numStars = Integer.parseInt(templateData[0][i][1]);
-            Log.i(TAG, "Number of Stars: " + numStars);
             // For each x and y, parse values, then calculate rotated values. Formulae:
             // x' = (x * cos(theta)) - (y * sin(theta))
             // y' = (x * sin(theta)) + (y * cos(theta))
+            if (i == 9)
+                Log.i(TAG, "Constellation: " + templateData[0][i][0] + " Rotated X and Y Values:");
             for(int j = 0; j < numStars; j++) {
                 x = Double.parseDouble(templateData[1][i][j]);
                 y = Double.parseDouble(templateData[2][i][j]);
+//                xprime = (x * Math.cos(angle)) + (y * Math.sin(angle));
+//                yprime = (y * Math.cos(angle) - (x * Math.sin(angle)));
                 xprime = (x * Math.cos(angle)) - (y * Math.sin(angle));
                 yprime = (x * Math.sin(angle)) + (y * Math.cos(angle));
 
-//                Log.i(TAG, "x: " + x);
-//                Log.i(TAG, "y: " + y);
-//                Log.i(TAG, "xprime: " + xprime);
-//                Log.i(TAG, "yprime: " + yprime);
+                if (i == 9) {
+                    Log.i(TAG, "x: " + x);
+                    Log.i(TAG, "y: " + y);
+                    Log.i(TAG, "xprime: " + xprime);
+                    Log.i(TAG, "yprime: " + yprime);
+                }
 
                 rotatedTemplates[1][i][j] = xprime;
                 rotatedTemplates[2][i][j] = yprime;
@@ -112,8 +117,6 @@ public class AnalysisActivity extends Activity {
                     //determine scale of the star pair from user image to be applied to templates
                     double scale =  starTwo_x-starOne_x;
                     //temp array to store scale transformed template data
-                    Log.i(TAG, "STRING NUM STARS: " + templateData[0][i][1]);
-                    Log.i(TAG, "PARSED INT " + Integer.parseInt(templateData[0][i][1]));
                     double[][] tempTemplate = new double[2][Integer.parseInt(templateData[0][i][1])];
 
                     //applying the scale transform to the template being looked at
@@ -129,6 +132,13 @@ public class AnalysisActivity extends Activity {
                         double templateYDelta = tempTemplate[1][2] - tempTemplate[1][1];
                         double xDelta = userStarData[starThree][0] - userStarData[starTwo][0];
                         double yDelta = userStarData[starThree][1] - userStarData[starTwo][1];
+                        if (i == 9) {
+                            Log.i(TAG, "Inner Comparisons:");
+                            Log.i(TAG, "rotated template first star: " + tempTemplate[0][2] + ", " + tempTemplate[1][2]);
+                            Log.i(TAG, "rotated template second star: " + tempTemplate[1][2] + ", " + tempTemplate[1][1]);
+                            Log.i(TAG, "tempXDelta: " + templateXDelta + ". TempYDelta: " + templateYDelta);
+                            Log.i(TAG, "userXDelta: " + xDelta + ". userYDelta" + yDelta);
+                        }
                         //check to see if a match was found with the triplet set
                         if(xDelta>(templateXDelta*0.9) && xDelta<(templateXDelta*1.1) && yDelta>(templateYDelta*0.9) && yDelta<(templateYDelta*1.1))
                         {
@@ -147,6 +157,7 @@ public class AnalysisActivity extends Activity {
                             while(starCount!=Integer.parseInt(templateData[0][i][1])) {
                                 for(nextStar = lastStar+1; nextStar<userStarData.length;nextStar++)
                                 {
+<<<<<<< Updated upstream
                                     templateXDelta = tempTemplate[0][starCount+1] - tempTemplate[0][starCount];
                                     templateYDelta = tempTemplate[1][starCount+1] - tempTemplate[1][starCount];
                                     xDelta = userStarData[nextStar][0] - userStarData[lastStar][0];
@@ -156,6 +167,24 @@ public class AnalysisActivity extends Activity {
                                         match[2][starCount + 1] = Double.toString(userStarData[nextStar][1]);
                                         starCount++;
                                         break;
+=======
+                                    templateXDelta = tempTemplate[0][m] - tempTemplate[0][k];
+                                    templateYDelta = tempTemplate[1][m] - tempTemplate[1][k];
+                                    xDelta = userStarData[m][0] - userStarData[k][0];
+                                    yDelta = userStarData[m][1] - userStarData[k][1];
+                                    if (i == 9) {
+                                        Log.i(TAG, "Inner Comparisons:");
+                                        Log.i(TAG, "rotated template first star: " + tempTemplate[0][m] + ", " + tempTemplate[1][m]);
+                                        Log.i(TAG, "rotated template second star: " + tempTemplate[0][k] + ", " + tempTemplate[1][k]);
+                                        Log.i(TAG, "tempXDelta: " + templateXDelta + ". TempYDelta: " + templateYDelta);
+                                        Log.i(TAG, "userXDelta: " + xDelta + ". userYDelta" + yDelta);
+                                    }
+                                    //check to see if the specific star is the next star in the constellation
+                                    if(xDelta>(templateXDelta*0.9) && xDelta<(templateXDelta*1.1) && yDelta>(templateYDelta*0.9) && yDelta<(templateYDelta*1.1))
+                                    {
+                                        match[1][k+1] = Double.toString(userStarData[m][0]);
+                                        match[2][k+1] = Double.toString(userStarData[m][1]);
+>>>>>>> Stashed changes
                                     }
                                 }
                                 lastStar = nextStar;
