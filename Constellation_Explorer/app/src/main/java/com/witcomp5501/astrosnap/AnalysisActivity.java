@@ -20,7 +20,7 @@ public class AnalysisActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         match = findConstellationMatch(MainActivity.templateData);
-        Log.i(TAG, Arrays.deepToString(match));
+        Log.i(TAG, "MATCH DETECTED " + match[0][0]);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class AnalysisActivity extends Activity {
         double x, y, xprime, yprime;
 
         // For each constellation:
-        for (int i = 0; i < 89; i++) {
+        for (int i = 0; i < 86; i++) {
             int numStars = Integer.parseInt(templateData[0][i][1]);
             Log.i(TAG, "Number of Stars: " + numStars);
             // For each x and y, parse values, then calculate rotated values. Formulae:
@@ -75,16 +75,16 @@ public class AnalysisActivity extends Activity {
                 y = Double.parseDouble(templateData[2][i][j]);
                 xprime = (x * Math.cos(angle)) - (y * Math.sin(angle));
                 yprime = (x * Math.sin(angle)) + (y * Math.cos(angle));
-                Log.i(TAG, "x: " + x);
-                Log.i(TAG, "y: " + y);
-                Log.i(TAG, "xprime: " + xprime);
-                Log.i(TAG, "yprime: " + yprime);
+
+//                Log.i(TAG, "x: " + x);
+//                Log.i(TAG, "y: " + y);
+//                Log.i(TAG, "xprime: " + xprime);
+//                Log.i(TAG, "yprime: " + yprime);
+
                 rotatedTemplates[1][i][j] = xprime;
                 rotatedTemplates[2][i][j] = yprime;
             }
         }
-        Log.i(TAG, "Rotated X values: " + Arrays.deepToString(rotatedTemplates[1]));
-        Log.i(TAG, "Rotated Y values: " + Arrays.deepToString(rotatedTemplates[2]));
         return rotatedTemplates;
     }
 
@@ -98,7 +98,7 @@ public class AnalysisActivity extends Activity {
     private String[][] findConstellationMatch(String[][][] templateData) {
         double[][] userStarData = CameraActivity.getStarArray();//grab dataset from user image from the camera activity
         String[][] match = new String[3][31];//this array will contain the coordinates of all the stars in identified constellation
-        for(int i=0;i<89;i++)//iterate through each 89 constellations
+        for(int i=0;i<86;i++)//iterate through each 89 constellations
         {
             //iterate over the user image dataset for the index of the first star in the triplet
             for(int starOne=0;starOne<userStarData.length-2;starOne++)
@@ -112,6 +112,8 @@ public class AnalysisActivity extends Activity {
                     //determine scale of the star pair from user image to be applied to templates
                     double scale =  starTwo_x-starOne_x;
                     //temp array to store scale transformed template data
+                    Log.i(TAG, "STRING NUM STARS: " + templateData[0][i][1]);
+                    Log.i(TAG, "PARSED INT " + Integer.parseInt(templateData[0][i][1]));
                     double[][] tempTemplate = new double[2][Integer.parseInt(templateData[0][i][1])];
 
                     //applying the scale transform to the template being looked at
@@ -123,8 +125,8 @@ public class AnalysisActivity extends Activity {
                     //iterate over the user image dataset for the index of the third star in the user image
                     for(int starThree=starTwo+1;starThree<userStarData.length;starThree++)
                     {
-                        double templateXDelta = tempTemplate[1][2] - tempTemplate[1][1];
-                        double templateYDelta = tempTemplate[2][2] - tempTemplate[2][1];
+                        double templateXDelta = tempTemplate[0][2] - tempTemplate[0][1];
+                        double templateYDelta = tempTemplate[1][2] - tempTemplate[1][1];
                         double xDelta = userStarData[starThree][0] - userStarData[starTwo][0];
                         double yDelta = userStarData[starThree][1] - userStarData[starTwo][1];
                         //check to see if a match was found with the triplet set
@@ -143,8 +145,8 @@ public class AnalysisActivity extends Activity {
                             {
                                 for(int m=starThree+1;m<userStarData.length;m++)
                                 {
-                                    templateXDelta = tempTemplate[1][m] - tempTemplate[1][k];
-                                    templateYDelta = tempTemplate[2][m] - tempTemplate[2][k];
+                                    templateXDelta = tempTemplate[0][m] - tempTemplate[0][k];
+                                    templateYDelta = tempTemplate[1][m] - tempTemplate[1][k];
                                     xDelta = userStarData[m][0] - userStarData[k][0];
                                     yDelta = userStarData[m][1] - userStarData[k][1];
                                     //check to see if the specific star is the next star in the constellation
@@ -162,6 +164,7 @@ public class AnalysisActivity extends Activity {
                 }
             }
         }
-        return null;
+        //return null;
+        return new String[3][31];
     }
 }

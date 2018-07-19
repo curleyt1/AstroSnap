@@ -108,7 +108,7 @@ public class MainActivity extends Activity {
             Scanner sc = new Scanner(textFileStream);
             sc.useDelimiter(",|\\n");
             while(sc.hasNext()){
-                for(int constell=0;constell<89;constell++){
+                for(int constell=0;constell<86;constell++){
                     data[0][constell][0] = sc.next();
                     numStars = sc.next();
                     data[0][constell][1] = numStars;
