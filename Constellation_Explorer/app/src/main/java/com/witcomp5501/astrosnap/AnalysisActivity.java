@@ -129,8 +129,8 @@ public class AnalysisActivity extends Activity {
                     //applying the scale transform to the template being looked at
                     for(int j=0;j<Integer.parseInt(templateData[0][i][1]);j++)
                     {
-                        tempTemplate[0][j] = rotatedTemplates[1][i][j]*scale_x;
-                        tempTemplate[1][j] = rotatedTemplates[2][i][j]*scale_y;
+                        tempTemplate[0][j] = rotatedTemplates[1][i][j]+userStarData[j][0];
+                        tempTemplate[1][j] = rotatedTemplates[2][i][j]+userStarData[j][1];
                     }
                     //iterate over the user image dataset for the index of the third star in the user image
                     for(int starThree=starTwo+1;starThree<userStarData.length;starThree++)
