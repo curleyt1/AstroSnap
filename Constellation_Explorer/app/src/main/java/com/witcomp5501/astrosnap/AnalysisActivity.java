@@ -91,8 +91,9 @@ public class AnalysisActivity extends Activity {
                     Log.i(TAG, "yprime: " + yprime);
                 }
 
-                rotatedTemplates[1][i][j] = xprime;
-                rotatedTemplates[2][i][j] = yprime;
+                //Swapping x and y coordinates to flip templates to match the way the camera graphs the blobs
+                rotatedTemplates[1][i][j] = yprime;
+                rotatedTemplates[2][i][j] = xprime;
             }
         }
         return rotatedTemplates;
@@ -120,13 +121,13 @@ public class AnalysisActivity extends Activity {
                     double[][][] rotatedTemplates = rotate(templateData, starOne, starTwo);
                     double starTwo_x = userStarData[starTwo][0];
                     //determine scale of the star pair from user image to be applied to templates
-                    double scale_x =  starTwo_x-starOne_x;
+                    double scale_x =  userStarData[starTwo][0] - userStarData[starOne][0];
                     double scale_y = userStarData[starTwo][1] - userStarData[starOne][1];
                     //temp array to store scale transformed template data
                     double[][] tempTemplate = new double[2][Integer.parseInt(templateData[0][i][1])];
 
                     //applying the scale transform to the template being looked at
-                    for(int j=1;j<Integer.parseInt(templateData[0][i][1]);j++)
+                    for(int j=0;j<Integer.parseInt(templateData[0][i][1]);j++)
                     {
                         tempTemplate[0][j] = rotatedTemplates[1][i][j]*scale_x;
                         tempTemplate[1][j] = rotatedTemplates[2][i][j]*scale_y;
@@ -134,6 +135,9 @@ public class AnalysisActivity extends Activity {
                     //iterate over the user image dataset for the index of the third star in the user image
                     for(int starThree=starTwo+1;starThree<userStarData.length;starThree++)
                     {
+                        //TODO:scaling template to userdata for triplet
+
+
                         double templateXDelta = tempTemplate[0][2] - tempTemplate[0][1];
                         double templateYDelta = tempTemplate[1][2] - tempTemplate[1][1];
                         double xDelta = userStarData[starThree][0] - userStarData[starTwo][0];
@@ -156,7 +160,7 @@ public class AnalysisActivity extends Activity {
                             Log.i(TAG, "X: " + tempTemplate[0][3] + ", Y: " + tempTemplate[1][3]);
                         }
                         //check to see if a match was found with the triplet set
-                        if(xDelta>(templateXDelta*0.9) && xDelta<(templateXDelta*1.1) && yDelta>(templateYDelta*0.9) && yDelta<(templateYDelta*1.1))
+                        if(xDelta>(templateXDelta*0.95) && xDelta<(templateXDelta*1.05) && yDelta>(templateYDelta*0.95) && yDelta<(templateYDelta*1.05))
                         {
                             //if match was found, save their coordinates into the match[][] array as well as the name of the identified constellation
                             match[0][0] = templateData[0][i][0];
@@ -173,12 +177,11 @@ public class AnalysisActivity extends Activity {
                             while(starCount!=Integer.parseInt(templateData[0][i][1])) {
                                 for(nextStar = lastStar+1; nextStar<userStarData.length;nextStar++)
                                 {
-
                                     templateXDelta = tempTemplate[0][starCount+1] - tempTemplate[0][starCount];
                                     templateYDelta = tempTemplate[1][starCount+1] - tempTemplate[1][starCount];
                                     xDelta = userStarData[nextStar][0] - userStarData[lastStar][0];
                                     yDelta = userStarData[nextStar][1] - userStarData[lastStar][1];
-                                    if (xDelta > (templateXDelta * 0.9) && xDelta < (templateXDelta * 1.1) && yDelta > (templateYDelta * 0.9) && yDelta < (templateYDelta * 1.1)) {
+                                    if (xDelta > (templateXDelta * 0.95) && xDelta < (templateXDelta * 1.05) && yDelta > (templateYDelta * 0.95) && yDelta < (templateYDelta * 1.05)) {
                                         match[1][starCount + 1] = Double.toString(userStarData[nextStar][0]);
                                         match[2][starCount + 1] = Double.toString(userStarData[nextStar][1]);
                                         starCount++;
