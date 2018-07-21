@@ -33,6 +33,10 @@ public class AnalysisActivity extends Activity {
             if(MainActivity.wiki[i][0]==match[0][0]){
                 link = MainActivity.wiki[i][1];
             }
+//          DEBUG: if null test what it looks like for caelum
+            else
+                link = MainActivity.wiki[9][1];
+//          END DEBUG LINES
         }
         Button wikiButton = (Button)findViewById(R.id.button4);
         final String finalLink = link;
@@ -153,7 +157,7 @@ public class AnalysisActivity extends Activity {
                     double[][] tempTemplate = new double[2][Integer.parseInt(templateData[0][i][1])];
 
                     //applying the scale transform to the template being looked at
-                    for(int j=0;j<Integer.parseInt(templateData[0][i][1]);j++)
+                    for(int j=0;j<Integer.parseInt(templateData[0][i][1]) && j<userStarData.length;j++)
                     {
                         tempTemplate[0][j] = rotatedTemplates[1][i][j]+userStarData[j][0];
                         tempTemplate[1][j] = rotatedTemplates[2][i][j]+userStarData[j][1];
