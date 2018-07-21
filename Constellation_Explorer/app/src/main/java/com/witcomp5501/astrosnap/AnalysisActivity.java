@@ -71,7 +71,8 @@ public class AnalysisActivity extends Activity {
         dx = x1 - x0;
         dy = y1 - y0;
 //        angle in Radians
-        angle = ((180 * (1 - Math.signum(dx)) / 2 + Math.atan(dy / dx) / Math.PI * 180)) / (180 * Math.PI);
+        angle = Math.atan(dx/dy);
+//        angle = ((180 * (1 - Math.signum(dx)) / 2 + Math.atan(dy / dx) / Math.PI * 180)) / (180 * Math.PI);
 //        angle in Degrees
 //        angle = 90 * (1-Math.signum(dx)) + Math.atan(dy/dx);
         Log.i(TAG, "Rotation angle: " + angle);
