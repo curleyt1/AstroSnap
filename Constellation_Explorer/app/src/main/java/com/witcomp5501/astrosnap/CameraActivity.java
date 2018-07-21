@@ -20,6 +20,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfKeyPoint;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.features2d.Features2d;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.Arrays;
@@ -67,7 +68,7 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
     @Override
     public void onResume() {
         super.onResume();
-        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_6, this, mLoaderCallback);
+        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_4_0, this, mLoaderCallback);
     }
 
     /**
@@ -116,6 +117,7 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
      */
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         if (processNextFrame) {
+            Imgcodecs.imwrite("/sdcard/AstroSnap_image.jpg", inputFrame.rgba());
             Imgproc.cvtColor(inputFrame.rgba(), mGray, Imgproc.COLOR_BGR2GRAY);
             blobDetector.detect(mGray, matOfKeyPoints);
             Features2d.drawKeypoints(mGray, matOfKeyPoints, imgWithBlobs);
