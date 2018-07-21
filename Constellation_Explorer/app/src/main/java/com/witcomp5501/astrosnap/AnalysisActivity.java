@@ -45,7 +45,10 @@ public class AnalysisActivity extends Activity {
         y1 = userStarData[second_brightest][1];
         dx = x1 - x0;
         dy = y1 - y0;
-        angle = (180 * (1 - Math.signum(dx)) / 2 + Math.atan(dy / dx) / Math.PI * 180);
+//        angle in Radians
+        angle = ((180 * (1 - Math.signum(dx)) / 2 + Math.atan(dy / dx) / Math.PI * 180)) / (180 * Math.PI);
+//        angle in Degrees
+//        angle = 90 * (1-Math.signum(dx)) + Math.atan(dy/dx);
         Log.i(TAG, "Rotation angle: " + angle);
 
         return rotateTemplates(templateData, angle);
@@ -71,11 +74,16 @@ public class AnalysisActivity extends Activity {
             for(int j = 0; j < numStars; j++) {
                 x = Double.parseDouble(templateData[1][i][j]);
                 y = Double.parseDouble(templateData[2][i][j]);
-//                xprime = (x * Math.cos(angle)) + (y * Math.sin(angle));
-//                yprime = (y * Math.cos(angle) - (x * Math.sin(angle)));
-                xprime = (x * Math.cos(angle)) - (y * Math.sin(angle));
-                yprime = (x * Math.sin(angle)) + (y * Math.cos(angle));
 
+//                if angle is in degrees convert to radians
+//                xprime = (x * Math.cos((Math.toRadians(angle)))) - (y * Math.sin((Math.toRadians(angle))));
+//                yprime = (x * Math.sin(Math.toRadians(angle))) + (y * Math.cos((Math.toRadians(angle))));
+
+//                if angle is in radians
+                xprime = ((x * Math.cos(angle)) - (y * Math.sin(angle)));
+                yprime = ((x * Math.sin(angle)) + (y * Math.cos(angle)));
+
+//              log data for the Caelum constellation
                 if (i == 9) {
                     Log.i(TAG, "x: " + x);
                     Log.i(TAG, "y: " + y);
@@ -112,15 +120,16 @@ public class AnalysisActivity extends Activity {
                     double[][][] rotatedTemplates = rotate(templateData, starOne, starTwo);
                     double starTwo_x = userStarData[starTwo][0];
                     //determine scale of the star pair from user image to be applied to templates
-                    double scale =  starTwo_x-starOne_x;
+                    double scale_x =  starTwo_x-starOne_x;
+                    double scale_y = userStarData[starTwo][1] - userStarData[starOne][1];
                     //temp array to store scale transformed template data
                     double[][] tempTemplate = new double[2][Integer.parseInt(templateData[0][i][1])];
 
                     //applying the scale transform to the template being looked at
                     for(int j=1;j<Integer.parseInt(templateData[0][i][1]);j++)
                     {
-                        tempTemplate[0][j] = rotatedTemplates[1][i][j]*scale;
-                        tempTemplate[1][j] = rotatedTemplates[2][i][j];
+                        tempTemplate[0][j] = rotatedTemplates[1][i][j]*scale_x;
+                        tempTemplate[1][j] = rotatedTemplates[2][i][j]*scale_y;
                     }
                     //iterate over the user image dataset for the index of the third star in the user image
                     for(int starThree=starTwo+1;starThree<userStarData.length;starThree++)
@@ -129,12 +138,22 @@ public class AnalysisActivity extends Activity {
                         double templateYDelta = tempTemplate[1][2] - tempTemplate[1][1];
                         double xDelta = userStarData[starThree][0] - userStarData[starTwo][0];
                         double yDelta = userStarData[starThree][1] - userStarData[starTwo][1];
+//                      log data for the Caelum constellation
                         if (i == 9) {
                             Log.i(TAG, "Inner Comparisons:");
-                            Log.i(TAG, "rotated template first star: " + tempTemplate[0][2] + ", " + tempTemplate[1][2]);
-                            Log.i(TAG, "rotated template second star: " + tempTemplate[1][2] + ", " + tempTemplate[1][1]);
+                            Log.i(TAG, "Second star Index: " + starTwo);
+                            Log.i(TAG, "Third star Index: " + starThree);
+                            Log.i(TAG, "user second star: " + userStarData[starTwo][0] + ", " + userStarData[starTwo][1]);
+                            Log.i(TAG, "user third star: " + userStarData[starThree][0] + ", " + userStarData[starThree][1]);
+                            Log.i(TAG, "rotated template second star: " + tempTemplate[0][1] + ", " + tempTemplate[1][1]);
+                            Log.i(TAG, "rotated template third star: " + tempTemplate[0][2] + ", " + tempTemplate[1][2]);
                             Log.i(TAG, "tempXDelta: " + templateXDelta + ". TempYDelta: " + templateYDelta);
                             Log.i(TAG, "userXDelta: " + xDelta + ". userYDelta" + yDelta);
+                            Log.i(TAG, "ARRAY:");
+                            Log.i(TAG, "X: " + tempTemplate[0][0] + ", Y: " + tempTemplate[1][0]);
+                            Log.i(TAG, "X: " + tempTemplate[0][1] + ", Y: " + tempTemplate[1][1]);
+                            Log.i(TAG, "X: " + tempTemplate[0][2] + ", Y: " + tempTemplate[1][2]);
+                            Log.i(TAG, "X: " + tempTemplate[0][3] + ", Y: " + tempTemplate[1][3]);
                         }
                         //check to see if a match was found with the triplet set
                         if(xDelta>(templateXDelta*0.9) && xDelta<(templateXDelta*1.1) && yDelta>(templateYDelta*0.9) && yDelta<(templateYDelta*1.1))
@@ -164,45 +183,9 @@ public class AnalysisActivity extends Activity {
                                         match[2][starCount + 1] = Double.toString(userStarData[nextStar][1]);
                                         starCount++;
                                         break;
-
-//                                    templateXDelta = tempTemplate[0][m] - tempTemplate[0][k];
-//                                    templateYDelta = tempTemplate[1][m] - tempTemplate[1][k];
-//                                    xDelta = userStarData[m][0] - userStarData[k][0];
-//                                    yDelta = userStarData[m][1] - userStarData[k][1];
-//                                    if (i == 9) {
-//                                        Log.i(TAG, "Inner Comparisons:");
-//                                        Log.i(TAG, "rotated template first star: " + tempTemplate[0][m] + ", " + tempTemplate[1][m]);
-//                                        Log.i(TAG, "rotated template second star: " + tempTemplate[0][k] + ", " + tempTemplate[1][k]);
-//                                        Log.i(TAG, "tempXDelta: " + templateXDelta + ". TempYDelta: " + templateYDelta);
-//                                        Log.i(TAG, "userXDelta: " + xDelta + ". userYDelta" + yDelta);
-//                                    }
-//                                    //check to see if the specific star is the next star in the constellation
-//                                    if(xDelta>(templateXDelta*0.9) && xDelta<(templateXDelta*1.1) && yDelta>(templateYDelta*0.9) && yDelta<(templateYDelta*1.1))
-//                                    {
-//                                        match[1][k+1] = Double.toString(userStarData[m][0]);
-//                                        match[2][k+1] = Double.toString(userStarData[m][1]);
-//
-//                                    }
                                     }
                                 }
                                 lastStar = nextStar;
-                                //iterate over the rest of the user image dataset to find rest of the stars in the matching constellation
-                                //for (int k = starThree; k < userStarData.length - 1; k++) {
-//                                    for (int m = starThree + 1; m < userStarData.length; m++) {
-//                                        templateXDelta = tempTemplate[0][m] - tempTemplate[0][k];
-//                                        templateYDelta = tempTemplate[1][m] - tempTemplate[1][k];
-//                                        xDelta = userStarData[m][0] - userStarData[k][0];
-//                                        yDelta = userStarData[m][1] - userStarData[k][1];
-//                                        //check to see if the specific star is the next star in the constellation
-//                                        if (xDelta > (templateXDelta * 0.9) && xDelta < (templateXDelta * 1.1) && yDelta > (templateYDelta * 0.9) && yDelta < (templateYDelta * 1.1)) {
-//                                            match[1][k + 1] = Double.toString(userStarData[m][0]);
-//                                            match[2][k + 1] = Double.toString(userStarData[m][1]);
-//                                            oldCount = starCount;
-//                                            starCount++;
-//                                            break;
-//                                        }
-//                                    }
-                                //}
                             }
                             return match;
                         }
