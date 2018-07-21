@@ -1,8 +1,15 @@
 package com.witcomp5501.astrosnap;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class AnalysisActivity extends Activity {
 
@@ -18,6 +25,24 @@ public class AnalysisActivity extends Activity {
         super.onCreate(savedInstanceState);
         match = findConstellationMatch(MainActivity.templateData);
         Log.i(TAG, "MATCH DETECTED " + match[0][0]);
+        setContentView(R.layout.result_screen);
+        TextView textView   = (TextView) findViewById(R.id.textView2);
+        textView.setText(match[0][0]);
+        String link="";
+        for(int i=0;i<89;i++){
+            if(MainActivity.wiki[i][0]==match[0][0]){
+                link = MainActivity.wiki[i][1];
+            }
+        }
+        Button wikiButton = (Button)findViewById(R.id.button4);
+        final String finalLink = link;
+        wikiButton.setOnClickListener(new View.OnClickListener(){
+                public void onClick(View v) {
+                    Intent browserIntent = new Intent(
+                            Intent.ACTION_VIEW, Uri.parse(finalLink));
+                    startActivity(browserIntent);
+                }
+            });
     }
 
     @Override

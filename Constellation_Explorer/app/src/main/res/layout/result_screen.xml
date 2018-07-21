@@ -9,12 +9,12 @@
         android:layout_height="40sp"
         android:background="@color/colorPrimaryDark"
         android:gravity="top|center_horizontal"
-        android:text="Gemini"
+        android:text=""
         android:textColor="@android:color/white"
         android:textSize="24sp" />
 
     <Button
-        android:id="@+id/textView3"
+        android:id="@+id/button4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
