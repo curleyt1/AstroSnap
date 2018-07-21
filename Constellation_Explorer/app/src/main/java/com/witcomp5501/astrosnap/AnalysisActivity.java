@@ -181,9 +181,6 @@ public class AnalysisActivity extends Activity {
                     //iterate over the user image dataset for the index of the third star in the user image
                     for(int starThree=starTwo+1;starThree<userStarData.length;starThree++)
                     {
-                        //TODO:scaling template to userdata for triplet
-
-
                         double templateXDelta = tempTemplate[0][2] - tempTemplate[0][1];
                         double templateYDelta = tempTemplate[1][2] - tempTemplate[1][1];
                         double xDelta = userStarData[starThree][0] - userStarData[starTwo][0];
