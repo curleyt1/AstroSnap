@@ -18,7 +18,9 @@ import java.util.Scanner;
 public class MainActivity extends Activity {
 
     private static final String  TAG = "AstroSnap::MainActivity";
-    public static final int CAMERA_PERMISSION_REQUEST_CODE = 3;
+    public static final int PERMISSION_REQUEST_CODE = 3;
+    private static final int WRITE_PERMISSION_REQUEST_CODE = 112;
+    private static final int READ_PERMISSION_REQUEST_CODE = 113;
 
     //templateData[][][] will store in memory all the data pulled from the constellation template images
     //x values are categories of data on constellation, y values are specific constellation, z values are specific star in constellation
@@ -38,7 +40,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        permitCamera();
+        permissionCheck();
         Log.d(TAG, "Creating and setting view");
 
         //loading into memory the file data
@@ -60,11 +62,16 @@ public class MainActivity extends Activity {
     /**
      * This function is called when the application starts to ensure camera permissions are granted.
      */
-    private void permitCamera() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
+    private void permissionCheck() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA},CAMERA_PERMISSION_REQUEST_CODE);
+            // Write Storage permission is not granted
+            ActivityCompat.requestPermissions(this,
+                    new String[]{
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.CAMERA},
+                    PERMISSION_REQUEST_CODE);
         }
     }
 
