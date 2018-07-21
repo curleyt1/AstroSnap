@@ -43,20 +43,15 @@ public class AnalysisActivity extends Activity {
             if(MainActivity.wiki[i][0]==match[0][0]){
                 link = MainActivity.wiki[i][1];
             }
-//          DEBUG: if null test what it looks like for caelum
-            else
-                link = MainActivity.wiki[9][1];
-//          END DEBUG LINES
         }
 
+//          DEBUG: if null test what it looks like for caelum
+        link = MainActivity.wiki[9][1];
+        textView.setText("Caelum");
+//          END DEBUG LINES
+
 //      Fetch user image and use it as background in text view.
-//        BitmapFactory.Options options = new BitmapFactory.Options();
-//        options.inMutable = true;
-//        options.inScaled = false;
         Bitmap bmp = BitmapFactory.decodeFile("/sdcard/AstroSnap_image.jpg");
-//        Canvas canvas = new Canvas(bmp);
-//        Picture pic = new Picture();
-//        pic.draw(canvas);
         imageView.setImageBitmap(bmp);
 
         Button wikiButton = (Button)findViewById(R.id.button4);
