@@ -4,12 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Picture;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.PictureDrawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,8 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 public class AnalysisActivity extends Activity {
 
@@ -32,12 +24,13 @@ public class AnalysisActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
         match = findConstellationMatch(MainActivity.templateData);
         Log.i(TAG, "MATCH DETECTED " + match[0][0]);
         setContentView(R.layout.result_screen);
         TextView textView   = (TextView) findViewById(R.id.textView2);
-        ImageView imageView = (ImageView) findViewById(R.id.imageView2);
         textView.setText(match[0][0]);
+
         String link="";
         for(int i=0;i<89;i++){
             if(MainActivity.wiki[i][0]==match[0][0]){
@@ -45,12 +38,8 @@ public class AnalysisActivity extends Activity {
             }
         }
 
-//          DEBUG: if null test what it looks like for caelum
-        link = MainActivity.wiki[9][1];
-        textView.setText("Caelum");
-//          END DEBUG LINES
-
 //      Fetch user image and use it as background in text view.
+        ImageView imageView = (ImageView) findViewById(R.id.imageView2);
         Bitmap bmp = BitmapFactory.decodeFile("/sdcard/AstroSnap_image.jpg");
         imageView.setImageBitmap(bmp);
 
@@ -83,7 +72,6 @@ public class AnalysisActivity extends Activity {
         String[][][] rotatedTemplates = new String[5][89][31];
         double x0, y0, x1, y1, dx, dy;
         double angle = 0;
-
         x0 = userStarData[brightest_index][0];
         y0 = userStarData[brightest_index][1];
         x1 = userStarData[second_brightest][0];
@@ -155,8 +143,10 @@ public class AnalysisActivity extends Activity {
     private String[][] findConstellationMatch(String[][][] templateData) {
         double[][] userStarData = CameraActivity.getStarArray();//grab dataset from user image from the camera activity
         String[][] match = new String[3][31];//this array will contain the coordinates of all the stars in identified constellation
+        int templateNumStars;
         for(int i=0;i<86;i++)//iterate through each 89 constellations
         {
+            templateNumStars = Integer.parseInt(templateData[0][i][1]);
             //iterate over the user image dataset for the index of the first star in the triplet
             for(int starOne=0;starOne<userStarData.length-2;starOne++)
             {
@@ -170,10 +160,10 @@ public class AnalysisActivity extends Activity {
                     double scale_x =  userStarData[starTwo][0] - userStarData[starOne][0];
                     double scale_y = userStarData[starTwo][1] - userStarData[starOne][1];
                     //temp array to store scale transformed template data
-                    double[][] tempTemplate = new double[2][Integer.parseInt(templateData[0][i][1])];
+                    double[][] tempTemplate = new double[2][templateNumStars];
 
                     //applying the scale transform to the template being looked at
-                    for(int j=0;j<Integer.parseInt(templateData[0][i][1]) && j<userStarData.length;j++)
+                    for(int j=0;j<templateNumStars && j<userStarData.length;j++)
                     {
                         tempTemplate[0][j] = rotatedTemplates[1][i][j]+userStarData[j][0];
                         tempTemplate[1][j] = rotatedTemplates[2][i][j]+userStarData[j][1];
@@ -203,8 +193,9 @@ public class AnalysisActivity extends Activity {
                             Log.i(TAG, "X: " + tempTemplate[0][3] + ", Y: " + tempTemplate[1][3]);
                         }
                         //check to see if a match was found with the triplet set
-                        if(xDelta>(templateXDelta*0.95) && xDelta<(templateXDelta*1.05) && yDelta>(templateYDelta*0.95) && yDelta<(templateYDelta*1.05))
+                        if(templateNumStars<=userStarData.length && xDelta>(templateXDelta*0.95) && xDelta<(templateXDelta*1.05) && yDelta>(templateYDelta*0.95) && yDelta<(templateYDelta*1.05))
                         {
+                            Log.i(TAG, "MATCHED A CONSTELLATION");
                             //if match was found, save their coordinates into the match[][] array as well as the name of the identified constellation
                             match[0][0] = templateData[0][i][0];
                             match[1][0] = Double.toString(userStarData[starOne][0]);
@@ -213,32 +204,35 @@ public class AnalysisActivity extends Activity {
                             match[2][1] = Double.toString(userStarData[starTwo][1]);
                             match[1][2] = Double.toString(userStarData[starThree][0]);
                             match[2][2] = Double.toString(userStarData[starThree][1]);
-                            int starCount = 3;
-                            int lastStar=starThree;
-                            int nextStar;
 
-                            while(starCount!=Integer.parseInt(templateData[0][i][1])) {
-                                for(nextStar = lastStar+1; nextStar<userStarData.length;nextStar++)
-                                {
-                                    templateXDelta = tempTemplate[0][starCount+1] - tempTemplate[0][starCount];
-                                    templateYDelta = tempTemplate[1][starCount+1] - tempTemplate[1][starCount];
-                                    xDelta = userStarData[nextStar][0] - userStarData[lastStar][0];
-                                    yDelta = userStarData[nextStar][1] - userStarData[lastStar][1];
-                                    if (xDelta > (templateXDelta * 0.95) && xDelta < (templateXDelta * 1.05) && yDelta > (templateYDelta * 0.95) && yDelta < (templateYDelta * 1.05)) {
-                                        match[1][starCount + 1] = Double.toString(userStarData[nextStar][0]);
-                                        match[2][starCount + 1] = Double.toString(userStarData[nextStar][1]);
-                                        starCount++;
-                                        break;
-                                    }
-                                }
-                                lastStar = nextStar;
-                            }
+//                            TODO: Implement matching for remaining stars in the constellation.
+//                            int starCount = 3;
+//                            int lastStar=starThree;
+//                            int nextStar;
+//
+//                            while(starCount!=Integer.parseInt(templateData[0][i][1])) {
+//                                for(nextStar = lastStar+1; nextStar<userStarData.length;nextStar++)
+//                                {
+//                                    templateXDelta = tempTemplate[0][starCount+1] - tempTemplate[0][starCount];
+//                                    templateYDelta = tempTemplate[1][starCount+1] - tempTemplate[1][starCount];
+//                                    xDelta = userStarData[nextStar][0] - userStarData[lastStar][0];
+//                                    yDelta = userStarData[nextStar][1] - userStarData[lastStar][1];
+//                                    if (xDelta > (templateXDelta * 0.95) && xDelta < (templateXDelta * 1.05) && yDelta > (templateYDelta * 0.95) && yDelta < (templateYDelta * 1.05)) {
+//                                        match[1][starCount + 1] = Double.toString(userStarData[nextStar][0]);
+//                                        match[2][starCount + 1] = Double.toString(userStarData[nextStar][1]);
+//                                        starCount++;
+//                                        break;
+//                                    }
+//                                }
+//                                lastStar = nextStar;
+//                            }
                             return match;
                         }
                     }
                 }
             }
         }
+        // If no match was found return empty array.
         return new String[3][31];
     }
 }
