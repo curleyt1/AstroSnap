@@ -134,7 +134,6 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
             });
 
             // Log information on key points.
-            Log.i(TAG, matOfKeyPoints.toString());
             Log.i(TAG, matOfKeyPoints.dump());
             for (double[] star : starArray) {
                 Log.i(TAG, star[0] + ", " + star[1] + ", " + star[2]);

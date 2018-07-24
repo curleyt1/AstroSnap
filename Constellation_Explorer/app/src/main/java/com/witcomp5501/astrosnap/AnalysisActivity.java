@@ -29,13 +29,17 @@ public class AnalysisActivity extends Activity {
         Log.i(TAG, "MATCH DETECTED " + match[0][0]);
         setContentView(R.layout.result_screen);
         TextView textView   = (TextView) findViewById(R.id.textView2);
-        textView.setText(match[0][0]);
 
-        String link="";
+        if (match[0][0] != null)
+            textView.setText(match[0][0]);
+        else
+            textView.setText("No Match Found");
+
+        // In case there is not match link to wikipedia main page
+        String link="https://www.wikipedia.org/";
         for(int i=0;i<89;i++){
-            if(MainActivity.wiki[i][0]==match[0][0]){
+            if(MainActivity.wiki[i][0].equals(match[0][0]))
                 link = MainActivity.wiki[i][1];
-            }
         }
 
 //      Fetch user image and use it as background in text view.
@@ -78,11 +82,8 @@ public class AnalysisActivity extends Activity {
         y1 = userStarData[second_brightest][1];
         dx = x1 - x0;
         dy = y1 - y0;
-//        angle in Radians
+        // Angle in Radians
         angle = Math.atan(dx/dy);
-//        angle = ((180 * (1 - Math.signum(dx)) / 2 + Math.atan(dy / dx) / Math.PI * 180)) / (180 * Math.PI);
-//        angle in Degrees
-//        angle = 90 * (1-Math.signum(dx)) + Math.atan(dy/dx);
         Log.i(TAG, "Rotation angle: " + angle);
 
         return rotateTemplates(templateData, angle);
@@ -100,32 +101,18 @@ public class AnalysisActivity extends Activity {
         // For each constellation:
         for (int i = 0; i < 86; i++) {
             int numStars = Integer.parseInt(templateData[0][i][1]);
-            // For each x and y, parse values, then calculate rotated values. Formulae:
-            // x' = (x * cos(theta)) - (y * sin(theta))
-            // y' = (x * sin(theta)) + (y * cos(theta))
-            if (i == 9)
-                Log.i(TAG, "Constellation: " + templateData[0][i][0] + " Rotated X and Y Values:");
+
             for(int j = 0; j < numStars; j++) {
                 x = Double.parseDouble(templateData[1][i][j]);
                 y = Double.parseDouble(templateData[2][i][j]);
 
-//                if angle is in degrees convert to radians
-//                xprime = (x * Math.cos((Math.toRadians(angle)))) - (y * Math.sin((Math.toRadians(angle))));
-//                yprime = (x * Math.sin(Math.toRadians(angle))) + (y * Math.cos((Math.toRadians(angle))));
-
-//                if angle is in radians
+                // For each x and y, parse values, then calculate rotated values. Formulae:
+                // x' = (x * cos(theta)) - (y * sin(theta))
+                // y' = (x * sin(theta)) + (y * cos(theta))
                 xprime = ((x * Math.cos(angle)) - (y * Math.sin(angle)));
                 yprime = ((x * Math.sin(angle)) + (y * Math.cos(angle)));
 
-//              log data for the Caelum constellation
-                if (i == 9) {
-                    Log.i(TAG, "x: " + x);
-                    Log.i(TAG, "y: " + y);
-                    Log.i(TAG, "xprime: " + xprime);
-                    Log.i(TAG, "yprime: " + yprime);
-                }
-
-                //Swapping x and y coordinates to flip templates to match the way the camera graphs the blobs
+                // Swapping x and y coordinates to flip templates to match the way the camera graphs the blobs
                 rotatedTemplates[1][i][j] = yprime;
                 rotatedTemplates[2][i][j] = xprime;
             }
@@ -156,50 +143,19 @@ public class AnalysisActivity extends Activity {
                 {
                     double[][][] rotatedTemplates = rotate(templateData, starOne, starTwo);
                     double starTwo_x = userStarData[starTwo][0];
-//                    //determine scale of the star pair from user image to be applied to templates
-//                    double scale_x =  userStarData[starTwo][0] - userStarData[starOne][0];
-//                    double scale_y = userStarData[starTwo][1] - userStarData[starOne][1];
-//                    //temp array to store scale transformed template data
-//                    double[][] tempTemplate = new double[2][templateNumStars];
-//
-//                    //applying the scale transform to the template being looked at
-//                    for(int j=0;j<templateNumStars && j<userStarData.length;j++)
-//                    {
-//                        tempTemplate[0][j] = rotatedTemplates[1][i][j]+userStarData[j][0];
-//                        tempTemplate[1][j] = rotatedTemplates[2][i][j]+userStarData[j][1];
-//                    }
                     //iterate over the user image dataset for the index of the third star in the user image
                     for(int starThree=starTwo+1;starThree<userStarData.length;starThree++)
                     {
+                        // Scale by
                         double templateXDelta = (rotatedTemplates[1][i][2]-rotatedTemplates[1][i][1])/(rotatedTemplates[1][i][1]-rotatedTemplates[1][i][0]);
                         double templateYDelta = (rotatedTemplates[2][i][2]-rotatedTemplates[2][i][1])/(rotatedTemplates[2][i][1]-rotatedTemplates[2][i][0]);
                         double xDelta = (userStarData[starThree][0]-userStarData[starTwo][0])/(userStarData[starTwo][0]-userStarData[starOne][0]);
                         double yDelta = (userStarData[starThree][1]-userStarData[starTwo][1])/(userStarData[starTwo][1]-userStarData[starOne][1]);
-//                        double templateXDelta = tempTemplate[0][2] - tempTemplate[0][1];
-//                        double templateYDelta = tempTemplate[1][2] - tempTemplate[1][1];
-//                        double xDelta = userStarData[starThree][0] - userStarData[starTwo][0];
-//                        double yDelta = userStarData[starThree][1] - userStarData[starTwo][1];
-//                      log data for the Caelum constellation
-                        if (i == 9) {
-                            Log.i(TAG, "Inner Comparisons:");
-                            Log.i(TAG, "Second star Index: " + starTwo);
-                            Log.i(TAG, "Third star Index: " + starThree);
-                            Log.i(TAG, "user second star: " + userStarData[starTwo][0] + ", " + userStarData[starTwo][1]);
-                            Log.i(TAG, "user third star: " + userStarData[starThree][0] + ", " + userStarData[starThree][1]);
-                            Log.i(TAG, "rotated template second star: " + rotatedTemplates[1][i][1] + ", " + rotatedTemplates[2][i][1]);
-                            Log.i(TAG, "rotated template third star: " + rotatedTemplates[1][i][2] + ", " + rotatedTemplates[2][i][2]);
-                            Log.i(TAG, "tempXDelta: " + templateXDelta + ". TempYDelta: " + templateYDelta);
-                            Log.i(TAG, "userXDelta: " + xDelta + ". userYDelta" + yDelta);
-                            Log.i(TAG, "ARRAY:");
-                            Log.i(TAG, "X: " + rotatedTemplates[1][i][0] + ", Y: " + rotatedTemplates[2][i][0]);
-                            Log.i(TAG, "X: " + rotatedTemplates[1][i][1] + ", Y: " + rotatedTemplates[2][i][1]);
-                            Log.i(TAG, "X: " + rotatedTemplates[1][i][2] + ", Y: " + rotatedTemplates[2][i][2]);
-                            Log.i(TAG, "X: " + rotatedTemplates[1][i][3] + ", Y: " + rotatedTemplates[2][i][3]);
-                        }
+
                         //check to see if a match was found with the triplet set
                         if(templateNumStars<=userStarData.length && xDelta>(templateXDelta*0.9) && xDelta<(templateXDelta*1.1) && yDelta>(templateYDelta*0.9) && yDelta<(templateYDelta*1.1))
                         {
-                            Log.i(TAG, "MATCHED A CONSTELLATION");
+                            Log.i(TAG, "Matched first Triplet of " + templateData[0][i][0]);
                             //if match was found, save their coordinates into the match[][] array as well as the name of the identified constellation
                             match[0][0] = templateData[0][i][0];
                             match[1][0] = Double.toString(userStarData[starOne][0]);
@@ -209,27 +165,6 @@ public class AnalysisActivity extends Activity {
                             match[1][2] = Double.toString(userStarData[starThree][0]);
                             match[2][2] = Double.toString(userStarData[starThree][1]);
 
-//                            TODO: Implement matching for remaining stars in the constellation.
-//                            int starCount = 3;
-//                            int lastStar=starThree;
-//                            int nextStar;
-//
-//                            while(starCount!=Integer.parseInt(templateData[0][i][1])) {
-//                                for(nextStar = lastStar+1; nextStar<userStarData.length;nextStar++)
-//                                {
-//                                    templateXDelta = tempTemplate[0][starCount+1] - tempTemplate[0][starCount];
-//                                    templateYDelta = tempTemplate[1][starCount+1] - tempTemplate[1][starCount];
-//                                    xDelta = userStarData[nextStar][0] - userStarData[lastStar][0];
-//                                    yDelta = userStarData[nextStar][1] - userStarData[lastStar][1];
-//                                    if (xDelta > (templateXDelta * 0.95) && xDelta < (templateXDelta * 1.05) && yDelta > (templateYDelta * 0.95) && yDelta < (templateYDelta * 1.05)) {
-//                                        match[1][starCount + 1] = Double.toString(userStarData[nextStar][0]);
-//                                        match[2][starCount + 1] = Double.toString(userStarData[nextStar][1]);
-//                                        starCount++;
-//                                        break;
-//                                    }
-//                                }
-//                                lastStar = nextStar;
-//                            }
                             return match;
                         }
                     }

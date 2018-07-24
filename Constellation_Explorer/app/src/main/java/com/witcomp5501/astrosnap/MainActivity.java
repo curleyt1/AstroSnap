@@ -19,8 +19,6 @@ public class MainActivity extends Activity {
 
     private static final String  TAG = "AstroSnap::MainActivity";
     public static final int PERMISSION_REQUEST_CODE = 3;
-    private static final int WRITE_PERMISSION_REQUEST_CODE = 112;
-    private static final int READ_PERMISSION_REQUEST_CODE = 113;
 
     //templateData[][][] will store in memory all the data pulled from the constellation template images
     //x values are categories of data on constellation, y values are specific constellation, z values are specific star in constellation
