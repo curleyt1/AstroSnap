@@ -146,7 +146,7 @@ public class AnalysisActivity extends Activity {
                     //iterate over the user image dataset for the index of the third star in the user image
                     for(int starThree=starTwo+1;starThree<userStarData.length;starThree++)
                     {
-                        // Scale by
+                        // Scale using distance between brightest two stars, calculate ratios.
                         double templateXDelta = (rotatedTemplates[1][i][2]-rotatedTemplates[1][i][1])/(rotatedTemplates[1][i][1]-rotatedTemplates[1][i][0]);
                         double templateYDelta = (rotatedTemplates[2][i][2]-rotatedTemplates[2][i][1])/(rotatedTemplates[2][i][1]-rotatedTemplates[2][i][0]);
                         double xDelta = (userStarData[starThree][0]-userStarData[starTwo][0])/(userStarData[starTwo][0]-userStarData[starOne][0]);
