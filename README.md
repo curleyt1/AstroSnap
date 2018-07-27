@@ -2,13 +2,22 @@
 Constellation explorer is an Android application for constellation detection that utilizes the OpenCV library.
 
 **Note:** This ReadMe is a markdown file that is best viewed on the projects github page, located at the following link:
+
 https://github.com/curleyt1/AstroSnap
+
+## Constellation Explorer APK
+
+The binary for this project can be downloaded from our releases on github via the following link:
+
+https://github.com/curleyt1/AstroSnap/releases/tag/v0.1-alpha
+
+The APK, which is an installer for Android devices, is called `app-debug.apk`. This readme contains instructions on building this APK from the project source files.
 
 ## Project Files
 #### Constellation_Explorer
 Folder containing all android studio project files for application.
 ##### App subfolder
-This is the subfolder containing our Source files. The source code for the application's three activities are found in the path:
+This is the subfolder containing our Java Source files. The source code for the application's three activities are found in the path:
 
 `Project Files/Constellation_Explorer/app/src/main/java/com/witcomp5501/astrosnap`
 
