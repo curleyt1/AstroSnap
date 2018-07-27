@@ -39,7 +39,7 @@ Text file containing the wikipedia link for each constellation
 1. Download and install the Android Studio IDE from https://developer.android.com/studio/
 2. Launch Android Studio.
 3. Select File >> New >> Import Project
-4. Navigate to the directory of this project, select the `Constellation_Explorer` folder, and click `ok`.
+4. Navigate to the directory of this project, select the `Constellation_Explorer` folder in `Project Files`, and click `ok`.
 5. The IDE may download and configure gradle for the project. This takes a couple of minutes.
 6. Once that is finished build the project by clicking Build >> Make Project -- or by clicking the hammer in the top right menu.
 7. This will build the application's .apk file, called `app_debug.apk` which is located in the directory `Constellation_Explorer\app\build\outputs\debug\`.
