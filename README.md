@@ -9,7 +9,9 @@ https://github.com/curleyt1/AstroSnap
 Folder containing all android studio project files for application.
 ##### App subfolder
 Subfolder containing Source files. The source code for the application's three activities are found in the path:
+
 `Project Files/Constellation_Explorer/app/src/main/java/com/witcomp5501/astrosnap`
+
 Here you find the files:
 `MainActivity.java`
 `CameraActivity.java` and
