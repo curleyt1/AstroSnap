@@ -8,7 +8,7 @@ https://github.com/curleyt1/AstroSnap
 #### Constellation_Explorer
 Folder containing all android studio project files for application.
 ##### App subfolder
-Subfolder containing Source files. The source code for the application's three activities are found in the path:
+This is the subfolder containing our Source files. The source code for the application's three activities are found in the path:
 
 `Project Files/Constellation_Explorer/app/src/main/java/com/witcomp5501/astrosnap`
 
