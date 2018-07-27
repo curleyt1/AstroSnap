@@ -47,7 +47,7 @@ Text file containing the wikipedia link for each constellation
 9. If you do not yet have a virtual android device, you can create one here by clicking `Create New Virtual Device`, and following through the steps. An example device that will work for this project is a 'Nexus 5X' phone running android Oreo, API level 27.
 10. You can also simply copy this .apk to an android device and install it if unknown sources are enabled in the device settings.
 
-#### Installing OpenCV Manager on a virtual Android device
+## Installing OpenCV Manager on a virtual Android device
 Constellation Explorer utilizses the OpenCV Android library. Loading this library **requires** that the device installs another application called OpenCV Manager.
 
 The following step does not need to be done if running the application on a real android device. It is only for virtual devices in the emulator that cannot use the google play store:
@@ -58,7 +58,7 @@ The OpenCV manager apk is bundled in with the project zip file. to install run t
 
 `adb install <INSERT_PATH_TO_DIRECTORY_HERE>\OpenCV_3.4.1_Manager_3.41_x86.apk`
 
-#### Using a webcam with a virtual Android device in Android Studio
+## Using a webcam with a virtual Android device in Android Studio
 1. From android studio launch the AVD Manager under Tools >> AVD Manager.
 2. Click the pencil icon next to your virtual device to edit the device.
 3. Click show advanced settings, and change the **Back Camera** to use your webcam.
