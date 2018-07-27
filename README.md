@@ -51,3 +51,12 @@ Text file containing the wikipedia link for each constellation
 1. From android studio launch the AVD Manager under Tools >> AVD Manager.
 2. Click the pencil icon next to your virtual device to edit the device.
 3. Click show advanced settings, and change the **Back Camera** to use your webcam.
+
+#### Installing OpenCV Manager on a virtual Android device
+The following step does not need to be done if running the application on a real android device. It is only for virtual devices in the emulator that cannot use the google play store:
+
+When launching the app, the user is prompted to install a dependency, OpenCV Manager, on their device. The virtual device you have just created does not have the google play store, so if you wish to test the application on an emulator, the OpenCV manager app must be installed manuallly using `adb`.
+
+The OpenCV manager apk is bundled in with the project zip file. to install run the following command in the Android Studio Command line while the virtual device is running:
+
+`adb install <PATH_TO_DIRECTORY>\ProjectFiles\OpenCV_3.4.1_Manager_3.41_x86.apk`
